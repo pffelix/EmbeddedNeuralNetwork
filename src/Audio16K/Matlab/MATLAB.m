@@ -3,7 +3,7 @@ clear
 clc
 nOrder = 6;
 fs = 15988;
-filepath = '../../../recording/output_2020-05-02_09-58-24.log';
+filepath = '../../../../recording/recs/16k_1_0degree.log';
 fileID = fopen(filepath,'r');
 %y = fscanf (fileID);
 y = regexp(fileread(filepath), '\r?\n', 'split');
