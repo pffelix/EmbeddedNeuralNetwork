@@ -1,10 +1,18 @@
+%% load file
 clear
 clc
 nOrder = 6;
 fs = 15988;
-fileID = fopen('./output_2020-05-02_09-25-12.log','r');
-y = fscanf (fileID,'%d');
-fclose (fileID);
+filepath = '../../../recording/output_2020-05-02_09-58-24.log';
+fileID = fopen(filepath,'r');
+%y = fscanf (fileID);
+y = regexp(fileread(filepath), '\r?\n', 'split');
+y = cellfun(@str2num,y,'UniformOutput',false);
+y = y(~cellfun('isempty',y));
+y = cell2mat(y);
+fclose(fileID);
+
+%% process file
 
 L = length(y)/2;
 y1 = y(1:L);
@@ -12,17 +20,14 @@ y1 = y1/32768;
 y2 = y(L+1:L*2);
 y2 = y2/32768;
 t = 0:1/fs:(L-1)/fs;
+
+%% plot file
+
 figure
 subplot (2,2,1);
 plot (t,y1);
 subplot (2,2,2);
 plot (t,y2);
-
-player = audioplayer(y1,fs);
-play (player)
-
-%player = audioplayer(y2,fs);
-%play (player)
 
 subplot (2,2,3);
 n = 2^nextpow2(L);
@@ -76,3 +81,10 @@ subplot (2,1,1);
 spectrogram (y1f,floor(fs/20),[],[],fs,'yaxis');
 subplot (2,1,2);
 spectrogram (y2f,floor(fs/20),[],[],fs,'yaxis');
+
+%% play file
+player = audioplayer(y1,fs);
+play (player)
+
+%player = audioplayer(y2,fs);
+%play (player)
