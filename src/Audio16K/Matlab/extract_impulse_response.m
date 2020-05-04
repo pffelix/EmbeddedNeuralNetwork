@@ -1,13 +1,14 @@
 %% parameters
 sweeprec_fs = 15988;
 sweepinverse_fs = 16000;
-filename = "16k_1_270degree";
+%filename = "16k_1_180degree";
 filepath_sweeprec = "../../../../recording/recs/" + filename + ".log";
 filepath_sweepinverse = "../../../../recording/sweeps/inverse_10Hz_8kHz_linear.wav";
 filepath_output = "../../../../recording/irs/" + filename + ".wav";
 nOrder = 6;
 mic_N = 2;
 filter_sweeprec = true;
+downsample = false; % else upsample to higher fs
 ir_average = true;
 ir_startthreshold = 0.1; % amplitude
 ir_startoffset_s = -0.1; % s
@@ -37,17 +38,29 @@ if filter_sweeprec
     sweeprec = filter(b,a,sweeprec);
 end
 
-%% adapt sampling rates
-fs = min([sweeprec_fs, sweepinverse_fs]);
-[P,Q] = rat(sweeprec_fs/sweepinverse_fs);
-sweepinverse = resample(sweepinverse,P,Q);
-sweepinverse_N = length(sweepinverse);
 
-%% split channels
+%% split recorded sweep channels
 sweeprecs_N = sweeprec_N/2;
-sweeprecs = zeros(sweeprecs_N,mic_N);
+sweeprecs = zeros(sweeprecs_N, mic_N);
 sweeprecs(:,1) = sweeprec(1:sweeprecs_N);
 sweeprecs(:,2) = sweeprec(sweeprecs_N+1:2*sweeprecs_N);
+
+%% adapt sampling rates
+if downsample
+    fs = min([sweeprec_fs, sweepinverse_fs]);
+    [P,Q] = rat(sweeprec_fs/sweepinverse_fs);
+    sweepinverse = resample(sweepinverse,P,Q);
+    sweepinverse_N = length(sweepinverse);
+else
+    fs = max([sweeprec_fs, sweepinverse_fs]);
+    [P,Q] = rat(sweepinverse_fs/sweeprec_fs);
+    sweeprecs_1 = resample(sweeprecs(:,1),P,Q);
+    sweeprecs_2 = resample(sweeprecs(:,2),P,Q);
+    sweeprecs_N = length(sweeprecs_1);
+    sweeprecs = zeros(sweeprecs_N, mic_N);
+    sweeprecs(:,1) = sweeprecs_1;
+    sweeprecs(:,2) = sweeprecs_2;
+end
 
 %% extract impulse responses
 irs_N = sweeprecs_N + sweepinverse_N - 1;
