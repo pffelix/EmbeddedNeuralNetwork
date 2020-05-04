@@ -2,10 +2,10 @@
 sweeprec_fs = 15988;
 sweepinverse_fs = 16000;
 %filename = "16k_1_180degree";
-filepath_sweeprec = "../../../../recording/recs/" + filename + ".log";
-filepath_sweepinverse = "../../../../recording/sweeps/inverse_10Hz_8kHz_linear.wav";
-filepath_output = "../../../../recording/irs/" + filename + ".wav";
-filepath_output_short = "../../../../recording/irs/" + filename + "_short.wav";
+filepath_sweeprec = "../../../../recording/rec/" + filename + ".log";
+filepath_sweepinverse = "../../../../recording/sweep/inverse_10Hz_8kHz_linear.wav";
+filepath_output = "../../../../recording/ir/" + filename + ".wav";
+filepath_output_short = "../../../../recording/ir/" + filename + "_short.wav";
 nOrder = 6;
 mic_N = 2;
 filter_sweeprec = true;
