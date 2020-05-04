@@ -5,16 +5,18 @@ sweepinverse_fs = 16000;
 filepath_sweeprec = "../../../../recording/recs/" + filename + ".log";
 filepath_sweepinverse = "../../../../recording/sweeps/inverse_10Hz_8kHz_linear.wav";
 filepath_output = "../../../../recording/irs/" + filename + ".wav";
+filepath_output_short = "../../../../recording/irs/" + filename + "_short.wav";
 nOrder = 6;
 mic_N = 2;
 filter_sweeprec = true;
 downsample = false; % else upsample to higher fs
 ir_average = true;
 ir_startthreshold = 0.1; % amplitude
-ir_startoffset_s = -0.1; % s
+ir_startoffset_s = -0.005; % s
 sweep_duration_s = 1.0; % s
 sweep_pause_s = 1.0; % s
 sweep_repeat = 3; % s
+sweep_short_s = 0.1; % s
 
 
 %% load inverse sweep
@@ -81,10 +83,27 @@ if ir_average
     irs = mean(irs, 3);
 end
 
+
 %% save impulse response
-irs = irs /max(max(abs(irs)));
+irs = irs / max(max(abs(irs)));
 audiowrite(filepath_output, irs, fs);
 
 %% plot impulse response
 figure(100)
 plot(irs)
+
+%% save short impulse response
+irs_short_N = sweep_short_s * fs;
+irs_short = zeros(irs_short_N, mic_N);
+for i = 1:2
+    irs_short(:,i) = irs(1:irs_short_N, i);
+    %irs_short(:,i) = irs_short(:,i) .* hann(length(irs_short(:, i)));
+end
+audiowrite(filepath_output_short, irs_short, fs);
+
+%% plot short impulse response
+figure(101)
+plot(irs_short)
+
+
+
