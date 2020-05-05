@@ -60,6 +60,7 @@ extern DMA_HandleTypeDef hdma_dfsdm1_flt0;
 extern DMA_HandleTypeDef hdma_dfsdm1_flt1;
 extern DFSDM_Filter_HandleTypeDef hdfsdm1_filter0;
 extern DFSDM_Filter_HandleTypeDef hdfsdm1_filter1;
+extern QSPI_HandleTypeDef hqspi;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -268,6 +269,20 @@ void DFSDM1_FLT1_IRQHandler(void)
   /* USER CODE BEGIN DFSDM1_FLT1_IRQn 1 */
 
   /* USER CODE END DFSDM1_FLT1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles QUADSPI global interrupt.
+  */
+void QUADSPI_IRQHandler(void)
+{
+  /* USER CODE BEGIN QUADSPI_IRQn 0 */
+
+  /* USER CODE END QUADSPI_IRQn 0 */
+  HAL_QSPI_IRQHandler(&hqspi);
+  /* USER CODE BEGIN QUADSPI_IRQn 1 */
+
+  /* USER CODE END QUADSPI_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
