@@ -27,10 +27,34 @@
 #include <stdbool.h>
 #include <string.h>
 
+
+
+#define SampleRate	16000 //16000 or 23000
+
 #define mem0BaseAddr 0x00000000
 #define mem1BaseAddr 0x00400000
-#define QUEUELENGTH 256
-#define QUEUELENGTH_Half 128
+#define QUEUELENGTH 512
+#define QUEUELENGTH_Half 256
+#define QueDataHalf_1st	0
+#define QueDataHalf_2nd	64
+#define QueDataHalf_3rd	128
+#define QueDataHalf_4th	192
+#define QueDataFull_1st	256
+#define QueDataFull_2nd	320
+#define QueDataFull_3rd	384
+#define QueDataFull_4th	448
+/*#define QueDataHalf_5th	256
+#define QueDataHalf_6th	320
+#define QueDataHalf_7th	384
+#define QueDataHalf_8th	448
+#define QueDataFull_1st	512
+#define QueDataFull_2nd	576
+#define QueDataFull_3rd	640
+#define QueDataFull_4th	704
+#define QueDataFull_5th	768
+#define QueDataFull_6th	832
+#define QueDataFull_7th	896
+#define QueDataFull_8th	960*/
 #define HAL_QSPI_TIMEOUT	180000U // 180 sec //
 
 /* USER CODE END Includes */
@@ -80,7 +104,6 @@ static void QSPI_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi);
 static void QSPI_Erase(QSPI_HandleTypeDef *QSPIHandle);
 static void QSPI_Initilize(QSPI_HandleTypeDef *hqspi);
 static void QSPI_Send(QSPI_HandleTypeDef *hqspi,uint8_t *sendData,uint32_t NbData, uint32_t Addr);
-static void QSPI_Send_DMA(QSPI_HandleTypeDef *hqspi,uint8_t *sendData,uint32_t NbData, uint32_t Addr);
 static void QSPI_Receive(QSPI_HandleTypeDef *hqspi,uint8_t *receiveData,uint32_t NbData, uint32_t Addr);
 
 /* USER CODE END PFP */
@@ -89,16 +112,16 @@ static void QSPI_Receive(QSPI_HandleTypeDef *hqspi,uint8_t *receiveData,uint32_t
 /* USER CODE BEGIN 0 */
 volatile bool bufferFull = false;
 volatile bool bufferHalfFull = false;
-volatile bool transmitQSPI = false;
 volatile bool recording = false;
 
 QSPI_CommandTypeDef QSPI_Cmd;
 uint32_t mem0Addr = mem0BaseAddr;
 uint32_t mem1Addr = mem1BaseAddr;
 
-uint8_t recMem1[QUEUELENGTH],recMem0[QUEUELENGTH];
+uint8_t recMem1[256],recMem0[256];
 int32_t recBuff1[QUEUELENGTH],recBuff0[QUEUELENGTH];
 int16_t amplitude0,amplitude1;
+int32_t amplitude0_32b,amplitude1_32b;
 
 uint8_t state=0;
 
@@ -146,23 +169,18 @@ GETCHAR_PROTOTYPE
 
 void HAL_DFSDM_FilterRegConvCpltCallback(DFSDM_Filter_HandleTypeDef *hdfsdm_filter)
 {
-	if (hdfsdm_filter == &hdfsdm1_filter0)
+	if (hdfsdm_filter == &hdfsdm1_filter0){
 		numFull++;
-	if (!bufferFull && hdfsdm_filter == &hdfsdm1_filter0){
-		bufferFull = true;
-		numDetected++;
+		if (!bufferFull){
+			numDetected++;
+			bufferFull = true;
+		}
 	}
 }
 void HAL_DFSDM_FilterRegConvHalfCpltCallback(DFSDM_Filter_HandleTypeDef *hdfsdm_filter)
 {
 	if (!bufferHalfFull && hdfsdm_filter == &hdfsdm1_filter0)
 		bufferHalfFull = true;
-}
-
-void HAL_QSPI_TxCpltCallback(QSPI_HandleTypeDef *hqspi)
-{
-	if (transmitQSPI)
-		transmitQSPI = false;
 }
 /* USER CODE END 0 */
 
@@ -252,7 +270,7 @@ int main(void)
 					printf("started\n");
 				}
 				if (bufferHalfFull){
-					int ii = 0;
+					/*int ii = 0;
 					for(int i=0;i<QUEUELENGTH_Half;i++){
 						amplitude0 = (int16_t)(recBuff0[i]>>16);
 						amplitude1 = (int16_t)(recBuff1[i]>>16);
@@ -263,17 +281,45 @@ int main(void)
 						ii += 2;
 					}
 					QSPI_Send (&hqspi,recMem0,256,mem0Addr);
-					QSPI_Send (&hqspi,recMem1,256,mem1Addr);
-					/*transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff0[0],256,mem0Addr);
-					transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff1[0],256,mem1Addr);*/
+					QSPI_Send (&hqspi,recMem1,256,mem1Addr);*/
+					
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_1st],256,mem0Addr);
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_1st],256,mem1Addr);
 					mem0Addr +=256;
 					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_2nd],256,mem0Addr);
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_2nd],256,mem1Addr);
+					mem0Addr +=256;
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_3rd],256,mem0Addr);
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_3rd],256,mem1Addr);
+					mem0Addr +=256;
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_4th],256,mem0Addr);
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_4th],256,mem1Addr);
+					mem0Addr +=256;
+					mem1Addr +=256;
+					/*QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_5th],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_6th],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_7th],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_8th],256,mem0Addr);
+					mem0Addr +=256;*/
+					/*QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_5th],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_6th],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_7th],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_8th],256,mem1Addr);
+					mem1Addr +=256;*/
+					
 					bufferHalfFull = false;
 				}
 				if (bufferFull){
-					int ii = 0;
+					/*int ii = 0;
 					for(int i=QUEUELENGTH_Half;i<QUEUELENGTH;i++){
 						amplitude0 = (int16_t)(recBuff0[i]>>16);
 						amplitude1 = (int16_t)(recBuff1[i]>>16);
@@ -284,13 +330,41 @@ int main(void)
 						ii +=2;
 					}
 					QSPI_Send (&hqspi,recMem0,256,mem0Addr);
-					QSPI_Send (&hqspi,recMem1,256,mem1Addr);
-					/*transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff0[QUEUELENGTH_Half],256,mem0Addr);
-					transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff1[QUEUELENGTH_Half],256,mem1Addr);*/
+					QSPI_Send (&hqspi,recMem1,256,mem1Addr);*/
+					
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_1st],256,mem0Addr);
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_1st],256,mem1Addr);
 					mem0Addr +=256;
 					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_2nd],256,mem0Addr);
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_2nd],256,mem1Addr);
+					mem0Addr +=256;
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_3rd],256,mem0Addr);
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_3rd],256,mem1Addr);
+					mem0Addr +=256;
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_4th],256,mem0Addr);
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_4th],256,mem1Addr);
+					mem0Addr +=256;
+					mem1Addr +=256;
+					/*QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_5th],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_6th],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_7th],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_8th],256,mem0Addr);
+					mem0Addr +=256;*/
+					/*QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_5th],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_6th],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_7th],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_8th],256,mem1Addr);
+					mem1Addr +=256;*/
+					
 					bufferFull = false;
 				}
 				break;
@@ -302,8 +376,8 @@ int main(void)
 				printf("Stopped Recording and Send Data Over\n");
 			
 				if (bufferHalfFull){
-					int ii = 0;
-					for(int i=0;i<QUEUELENGTH/2;i++){
+					/*int ii = 0;
+					for(int i=0;i<QUEUELENGTH_Half;i++){
 						amplitude0 = (int16_t)(recBuff0[i]>>16);
 						amplitude1 = (int16_t)(recBuff1[i]>>16);
 						recMem0[ii]   = (uint8_t)amplitude0;
@@ -313,18 +387,47 @@ int main(void)
 						ii += 2;
 					}
 					QSPI_Send (&hqspi,recMem0,256,mem0Addr);
-					QSPI_Send (&hqspi,recMem1,256,mem1Addr);
-					/*transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff0[0],256,mem0Addr);
-					transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff1[0],256,mem1Addr);*/
+					QSPI_Send (&hqspi,recMem1,256,mem1Addr);*/
+					
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_1st],256,mem0Addr);
 					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_2nd],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_3rd],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_4th],256,mem0Addr);
+					mem0Addr +=256;
+					/*QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_5th],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_6th],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_7th],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataHalf_8th],256,mem0Addr);
+					mem0Addr +=256;*/
+					
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_1st],256,mem1Addr);
 					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_2nd],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_3rd],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_4th],256,mem1Addr);
+					mem1Addr +=256;
+					/*QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_5th],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_6th],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_7th],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataHalf_8th],256,mem1Addr);
+					mem1Addr +=256;*/
+					
 					bufferHalfFull = false;
 				}
 				if (bufferFull){
-					int ii = 0;
-					for(int i=QUEUELENGTH/2;i<QUEUELENGTH;i++){
+					/*int ii = 0;
+					for(int i=QUEUELENGTH_Half;i<QUEUELENGTH;i++){
 						amplitude0 = (int16_t)(recBuff0[i]>>16);
 						amplitude1 = (int16_t)(recBuff1[i]>>16);
 						recMem0[ii]   = (uint8_t)amplitude0;
@@ -334,18 +437,47 @@ int main(void)
 						ii += 2;
 					}
 					QSPI_Send (&hqspi,recMem0,256,mem0Addr);
-					QSPI_Send (&hqspi,recMem1,256,mem1Addr);
-					/*transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff0[QUEUELENGTH_Half],256,mem0Addr);
-					transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff1[QUEUELENGTH_Half],256,mem1Addr);*/
+					QSPI_Send (&hqspi,recMem1,256,mem1Addr);*/
+					
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_1st],256,mem0Addr);
 					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_2nd],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_3rd],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_4th],256,mem0Addr);
+					mem0Addr +=256;
+					/*QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_5th],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_6th],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_7th],256,mem0Addr);
+					mem0Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff0[QueDataFull_8th],256,mem0Addr);
+					mem0Addr +=256;*/
+										
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_1st],256,mem1Addr);
 					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_2nd],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_3rd],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_4th],256,mem1Addr);
+					mem1Addr +=256;
+					/*QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_5th],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_6th],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_7th],256,mem1Addr);
+					mem1Addr +=256;
+					QSPI_Send (&hqspi,(uint8_t *)&recBuff1[QueDataFull_8th],256,mem1Addr);
+					mem1Addr +=256;*/
+					
 					bufferFull = false;
 				}
 				
 				// Recieve data from QSPI mem and send over UART
-				mem0Addr -=256;
+				/*mem0Addr -=256;
 				for (uint32_t addr=mem0BaseAddr; addr<=mem0Addr; addr+=256){
 					QSPI_Receive (&hqspi,recMem0,256,addr);
 					for (int i=0;i<256;i+=2){
@@ -360,7 +492,24 @@ int main(void)
 						amplitude1 = (int16_t)(((uint16_t) recMem1[i]) + (((uint16_t) recMem1[i+1])<<8));
 						printf ("%i\n",amplitude1);
 					}
+				}*/
+				mem0Addr -=256;
+				for (uint32_t addr=mem0BaseAddr; addr<=mem0Addr; addr+=256){
+					QSPI_Receive (&hqspi,recMem0,256,addr);
+					for (int i=0;i<256;i+=4){
+						amplitude0_32b = (int32_t)(((uint32_t) recMem0[i]) + (((uint32_t) recMem0[i+1])<<8)+ (((uint32_t) recMem0[i+2])<<16)+ (((uint32_t) recMem0[i+3])<<24));
+						printf ("%i\n",amplitude0_32b);
+					}
 				}
+				mem1Addr -=256;
+				for (uint32_t addr=mem1BaseAddr; addr<=mem1Addr; addr+=256){
+					QSPI_Receive (&hqspi,recMem1,256,addr);
+					for (int i=0;i<256;i+=4){
+						amplitude1_32b = (int32_t)(((uint32_t) recMem1[i]) + (((uint32_t) recMem1[i+1])<<8)+ (((uint32_t) recMem1[i+2])<<16)+ (((uint32_t) recMem1[i+3])<<24));
+						printf ("%i\n",amplitude1_32b);
+					}
+				}
+				
 				
 				printf ("Number of buffer full: %d\n",numFull);
 				printf ("Number of detected full: %d\n",numDetected);
@@ -452,7 +601,10 @@ void SystemClock_Config(void)
   PeriphClkInit.Dfsdm1ClockSelection = RCC_DFSDM1CLKSOURCE_PCLK;
   PeriphClkInit.PLLSAI1.PLLSAI1Source = RCC_PLLSOURCE_HSI;
   PeriphClkInit.PLLSAI1.PLLSAI1M = 4;
-  PeriphClkInit.PLLSAI1.PLLSAI1N = 77;
+	if (SampleRate == 16000)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 77;
+	else if(SampleRate == 23000)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 49;
   PeriphClkInit.PLLSAI1.PLLSAI1P = RCC_PLLP_DIV7;
   PeriphClkInit.PLLSAI1.PLLSAI1Q = RCC_PLLQ_DIV2;
   PeriphClkInit.PLLSAI1.PLLSAI1R = RCC_PLLR_DIV2;
@@ -509,7 +661,10 @@ static void MX_DFSDM1_Init(void)
   hdfsdm1_channel1.Instance = DFSDM1_Channel1;
   hdfsdm1_channel1.Init.OutputClock.Activation = ENABLE;
   hdfsdm1_channel1.Init.OutputClock.Selection = DFSDM_CHANNEL_OUTPUT_CLOCK_AUDIO;
-  hdfsdm1_channel1.Init.OutputClock.Divider = 43;
+	if (SampleRate == 16000)
+		hdfsdm1_channel1.Init.OutputClock.Divider = 43;
+	else if (SampleRate == 23000)
+		hdfsdm1_channel1.Init.OutputClock.Divider = 19;
   hdfsdm1_channel1.Init.Input.Multiplexer = DFSDM_CHANNEL_EXTERNAL_INPUTS;
   hdfsdm1_channel1.Init.Input.DataPacking = DFSDM_CHANNEL_STANDARD_MODE;
   hdfsdm1_channel1.Init.Input.Pins = DFSDM_CHANNEL_FOLLOWING_CHANNEL_PINS;
@@ -526,7 +681,10 @@ static void MX_DFSDM1_Init(void)
   hdfsdm1_channel2.Instance = DFSDM1_Channel2;
   hdfsdm1_channel2.Init.OutputClock.Activation = ENABLE;
   hdfsdm1_channel2.Init.OutputClock.Selection = DFSDM_CHANNEL_OUTPUT_CLOCK_AUDIO;
-  hdfsdm1_channel2.Init.OutputClock.Divider = 43;
+  if (SampleRate == 16000)
+		hdfsdm1_channel2.Init.OutputClock.Divider = 43;
+	else if (SampleRate == 23000)
+		hdfsdm1_channel2.Init.OutputClock.Divider = 19;
   hdfsdm1_channel2.Init.Input.Multiplexer = DFSDM_CHANNEL_EXTERNAL_INPUTS;
   hdfsdm1_channel2.Init.Input.DataPacking = DFSDM_CHANNEL_STANDARD_MODE;
   hdfsdm1_channel2.Init.Input.Pins = DFSDM_CHANNEL_SAME_CHANNEL_PINS;
@@ -571,8 +729,8 @@ static void MX_QUADSPI_Init(void)
   /* USER CODE END QUADSPI_Init 1 */
   /* QUADSPI parameter configuration*/
   hqspi.Instance = QUADSPI;
-  hqspi.Init.ClockPrescaler = 3;
-  hqspi.Init.FifoThreshold = 2;
+  hqspi.Init.ClockPrescaler = 0;
+  hqspi.Init.FifoThreshold = 1;
   hqspi.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_NONE;
   hqspi.Init.FlashSize = 22;
   hqspi.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_1_CYCLE;
@@ -776,7 +934,7 @@ static void QSPI_Erase(QSPI_HandleTypeDef *QSPIHandle)
 
 static void QSPI_Initilize(QSPI_HandleTypeDef *QSPIHandle)
 {
-	uint8_t data;
+	uint8_t data[3];
 	QSPI_Cmd.InstructionMode		= QSPI_INSTRUCTION_1_LINE;
 	QSPI_Cmd.AddressSize				= QSPI_ADDRESS_24_BITS;
   QSPI_Cmd.AlternateByteMode	= QSPI_ALTERNATE_BYTES_NONE;
@@ -803,13 +961,45 @@ static void QSPI_Initilize(QSPI_HandleTypeDef *QSPIHandle)
 	if (HAL_QSPI_Command (QSPIHandle,&QSPI_Cmd,HAL_QSPI_TIMEOUT) != HAL_OK){
 		Error_Handler();
 	}
-	if (HAL_QSPI_Receive (QSPIHandle,&data,HAL_QSPI_TIMEOUT) != HAL_OK){
+	if (HAL_QSPI_Receive (QSPIHandle,&data[0],HAL_QSPI_TIMEOUT) != HAL_OK){
 		Error_Handler();
 	}
-	if ((data&0x40) != 0x40){
+	if ((data[0]&0x40) != 0x40){
 		Error_Handler ();
 	}
-	//printf("First RDSR : %d\n" , data);
+	//printf("Status Reg : %d\n" , data[0]);
+	
+	//  Set Status and Configuration Registers
+	data[0] = 64;
+	data[1] = 0;
+	data[2] = 2;
+	QSPI_WriteEnable (QSPIHandle);
+	QSPI_Cmd.Instruction			= 0x01;
+	QSPI_Cmd.Address					= 0;
+	QSPI_Cmd.AddressMode			= QSPI_ADDRESS_NONE;
+	QSPI_Cmd.DummyCycles			= 0;
+	QSPI_Cmd.DataMode					= QSPI_DATA_1_LINE;
+	QSPI_Cmd.NbData						= 3;
+	HAL_QSPI_Command (QSPIHandle,&QSPI_Cmd,HAL_QSPI_TIMEOUT);
+	HAL_QSPI_Transmit (QSPIHandle,data,HAL_QSPI_TIMEOUT);
+	QSPI_AutoPollingMemReady (QSPIHandle);
+	
+	HAL_Delay (100);
+	
+	//	Read Configuration Register
+	QSPI_Cmd.Instruction			= 0x15;
+	QSPI_Cmd.Address					= 0;
+	QSPI_Cmd.AddressMode			= QSPI_ADDRESS_NONE;
+	QSPI_Cmd.DummyCycles			= 0;
+	QSPI_Cmd.DataMode					= QSPI_DATA_1_LINE;
+	QSPI_Cmd.NbData						= 2;
+	if (HAL_QSPI_Command (QSPIHandle,&QSPI_Cmd,HAL_QSPI_TIMEOUT) != HAL_OK){
+		Error_Handler();
+	}
+	if (HAL_QSPI_Receive (QSPIHandle,&data[0],HAL_QSPI_TIMEOUT) != HAL_OK){
+		Error_Handler();
+	}
+	//printf("Configuration Reg : %d,%d\n" , data[0], data[1]);
 
 	//	Erase whole chip before programming
 	//QSPI_WriteEnable (QSPIHandle);
@@ -836,26 +1026,8 @@ static void QSPI_Send(QSPI_HandleTypeDef *QSPIHandle, uint8_t *sendData, uint32_
 	QSPI_Cmd.DummyCycles			= 0;
 	QSPI_Cmd.DataMode					= QSPI_DATA_4_LINES;
 	QSPI_Cmd.NbData						= NbData;
-	HAL_QSPI_Command (QSPIHandle,&QSPI_Cmd,HAL_QSPI_TIMEOUT);
-	HAL_QSPI_Transmit (QSPIHandle,sendData,HAL_QSPI_TIMEOUT);
-	QSPI_AutoPollingMemReady (QSPIHandle);
-	
-}
-
-static void QSPI_Send_DMA(QSPI_HandleTypeDef *QSPIHandle, uint8_t *sendData, uint32_t NbData, uint32_t Addr)
-{
-	if (NbData>256){	// Max send data one page (256 Bytes)
-		Error_Handler();
-	}
-	QSPI_WriteEnable (QSPIHandle);
-	QSPI_Cmd.Instruction			= 0x38;
-	QSPI_Cmd.Address					= Addr;
-	QSPI_Cmd.AddressMode			= QSPI_ADDRESS_4_LINES;
-	QSPI_Cmd.DummyCycles			= 0;
-	QSPI_Cmd.DataMode					= QSPI_DATA_4_LINES;
-	QSPI_Cmd.NbData						= NbData;
-	HAL_QSPI_Command (QSPIHandle,&QSPI_Cmd,HAL_QSPI_TIMEOUT);
-	HAL_QSPI_Transmit_DMA (QSPIHandle,sendData);
+	HAL_QSPI_Command (QSPIHandle,&QSPI_Cmd,1);
+	HAL_QSPI_Transmit (QSPIHandle,sendData,1);
 	QSPI_AutoPollingMemReady (QSPIHandle);
 	
 }
