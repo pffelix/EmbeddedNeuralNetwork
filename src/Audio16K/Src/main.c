@@ -25,12 +25,31 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <stdbool.h>
-#include <string.h>
+
+/*
+********************      Exact Sample Rates:
+														16000   -->> 	15988
+														24000   -->>  24038
+														32000   -->>  32609
+														40000   -->>  40179
+														48000   -->>  48077
+*/
+#define SampleRate	48000 //16000/24000/32000/40000/48000
+
+#define ShiftRight	14		// Adjust Shift right to your loudness
 
 #define mem0BaseAddr 0x00000000
 #define mem1BaseAddr 0x00400000
-#define QUEUELENGTH 256
-#define QUEUELENGTH_Half 128
+#define QUEUELENGTH 512
+#define QUEUELENGTH_Half 256
+#define QueDataHalf_1st	0
+#define QueDataHalf_2nd	64
+#define QueDataHalf_3rd	128
+#define QueDataHalf_4th	192
+#define QueDataFull_1st	256
+#define QueDataFull_2nd	320
+#define QueDataFull_3rd	384
+#define QueDataFull_4th	448
 #define HAL_QSPI_TIMEOUT	180000U // 180 sec //
 
 /* USER CODE END Includes */
@@ -60,8 +79,11 @@ DMA_HandleTypeDef hdma_dfsdm1_flt1;
 
 QSPI_HandleTypeDef hqspi;
 
+TIM_HandleTypeDef htim1;
+
 UART_HandleTypeDef huart1;
 
+DMA_HandleTypeDef hdma_memtomem_dma2_channel1;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -73,14 +95,15 @@ static void MX_DMA_Init(void);
 static void MX_DFSDM1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_QUADSPI_Init(void);
+static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 
 static void QSPI_WriteEnable(QSPI_HandleTypeDef *hqspi);
 static void QSPI_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi);
+static void QSPI_AutoPollingMemReadyIT(QSPI_HandleTypeDef *hqspi);
 static void QSPI_Erase(QSPI_HandleTypeDef *QSPIHandle);
 static void QSPI_Initilize(QSPI_HandleTypeDef *hqspi);
 static void QSPI_Send(QSPI_HandleTypeDef *hqspi,uint8_t *sendData,uint32_t NbData, uint32_t Addr);
-static void QSPI_Send_DMA(QSPI_HandleTypeDef *hqspi,uint8_t *sendData,uint32_t NbData, uint32_t Addr);
 static void QSPI_Receive(QSPI_HandleTypeDef *hqspi,uint8_t *receiveData,uint32_t NbData, uint32_t Addr);
 
 /* USER CODE END PFP */
@@ -89,16 +112,18 @@ static void QSPI_Receive(QSPI_HandleTypeDef *hqspi,uint8_t *receiveData,uint32_t
 /* USER CODE BEGIN 0 */
 volatile bool bufferFull = false;
 volatile bool bufferHalfFull = false;
-volatile bool transmitQSPI = false;
 volatile bool recording = false;
+volatile bool qspiSendReady = true;
 
 QSPI_CommandTypeDef QSPI_Cmd;
 uint32_t mem0Addr = mem0BaseAddr;
 uint32_t mem1Addr = mem1BaseAddr;
 
-uint8_t recMem1[QUEUELENGTH],recMem0[QUEUELENGTH];
+uint8_t recMem1[256],recMem0[256];
+int16_t sendMem1[128],sendMem0[128];
 int32_t recBuff1[QUEUELENGTH],recBuff0[QUEUELENGTH];
 int16_t amplitude0,amplitude1;
+int32_t amplitude0_32b,amplitude1_32b;
 
 uint8_t state=0;
 
@@ -146,11 +171,12 @@ GETCHAR_PROTOTYPE
 
 void HAL_DFSDM_FilterRegConvCpltCallback(DFSDM_Filter_HandleTypeDef *hdfsdm_filter)
 {
-	if (hdfsdm_filter == &hdfsdm1_filter0)
+	if (hdfsdm_filter == &hdfsdm1_filter0){
 		numFull++;
-	if (!bufferFull && hdfsdm_filter == &hdfsdm1_filter0){
-		bufferFull = true;
-		numDetected++;
+		if (!bufferFull){
+			numDetected++;
+			bufferFull = true;
+		}
 	}
 }
 void HAL_DFSDM_FilterRegConvHalfCpltCallback(DFSDM_Filter_HandleTypeDef *hdfsdm_filter)
@@ -158,11 +184,9 @@ void HAL_DFSDM_FilterRegConvHalfCpltCallback(DFSDM_Filter_HandleTypeDef *hdfsdm_
 	if (!bufferHalfFull && hdfsdm_filter == &hdfsdm1_filter0)
 		bufferHalfFull = true;
 }
-
-void HAL_QSPI_TxCpltCallback(QSPI_HandleTypeDef *hqspi)
+void HAL_QSPI_StatusMatchCallback(QSPI_HandleTypeDef *hqspi)
 {
-	if (transmitQSPI)
-		transmitQSPI = false;
+	qspiSendReady = true;
 }
 /* USER CODE END 0 */
 
@@ -199,6 +223,7 @@ int main(void)
   MX_DFSDM1_Init();
   MX_USART1_UART_Init();
   MX_QUADSPI_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
 	printf("Hello\n");
 		
@@ -208,17 +233,6 @@ int main(void)
 	QSPI_Initilize (&hqspi);
 	printf("Initilize memory Done\n");
 	HAL_NVIC_EnableIRQ (EXTI15_10_IRQn);
-	
-	/*
-	//Sending a dummy thing
-	strcpy ((char*)qspiData,"SALAM");
-	QSPI_Send (&hqspi,qspiData,5,mem1Addr);
-	printf("Writing Done\n");
-	
-	//Reading a dummy thing
-	strcpy ((char *)qspiData,"0000000000");
-	QSPI_Receive (&hqspi,qspiData,5,mem1Addr);
-	printf("Reading Done: %5s\n",qspiData);*/
 	
 	
 	
@@ -239,6 +253,8 @@ int main(void)
 				HAL_Delay (1000);
 				break;
 			case 1: //Start Recording and send to mem on every half full
+				
+				// Start Recording Command for both channels
 				if (recording == false){
 					recording = true;
 					if(HAL_OK != HAL_DFSDM_FilterRegularStart_DMA(&hdfsdm1_filter1, recBuff1, QUEUELENGTH)){
@@ -251,46 +267,84 @@ int main(void)
 					}
 					printf("started\n");
 				}
+				
+				// Save data to qspi flash mem
+				// First, shift data to the right for sufficient amount, according to your speaker's volume
+				// Then, send 16bit data to the 16bit registers with DMA
+				// Finally, save data through qspi on the flash memory
 				if (bufferHalfFull){
-					int ii = 0;
-					for(int i=0;i<QUEUELENGTH_Half;i++){
-						amplitude0 = (int16_t)(recBuff0[i]>>16);
-						amplitude1 = (int16_t)(recBuff1[i]>>16);
-						recMem0[ii]   = (uint8_t)amplitude0;
-						recMem0[ii+1] = (uint8_t)(amplitude0>>8);
-						recMem1[ii]   = (uint8_t)amplitude1;
-						recMem1[ii+1] = (uint8_t)(amplitude1>>8);
-						ii += 2;
+					
+					for(int i=QueDataHalf_1st;i<QueDataHalf_3rd;i++){
+						recBuff0[i] = recBuff0[i]>>ShiftRight;
 					}
-					QSPI_Send (&hqspi,recMem0,256,mem0Addr);
-					QSPI_Send (&hqspi,recMem1,256,mem1Addr);
-					/*transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff0[0],256,mem0Addr);
-					transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff1[0],256,mem1Addr);*/
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff0[QueDataHalf_1st],(uint32_t)sendMem0,128);
+					HAL_DMA_PollForTransfer (&hdma_memtomem_dma2_channel1,HAL_DMA_FULL_TRANSFER,10);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem0,256,mem0Addr);
 					mem0Addr +=256;
+					
+					for(int i=QueDataHalf_1st;i<QueDataHalf_3rd;i++){
+						recBuff1[i] = recBuff1[i]>>ShiftRight;
+					}
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff1[QueDataHalf_1st],(uint32_t)sendMem1,128);
+					HAL_DMA_PollForTransfer (&hdma_memtomem_dma2_channel1,HAL_DMA_FULL_TRANSFER,10);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem1,256,mem1Addr);
 					mem1Addr +=256;
+					
+					
+					for(int i=QueDataHalf_3rd;i<QUEUELENGTH_Half;i++){
+						recBuff0[i] = recBuff0[i]>>ShiftRight;
+					}
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff0[QueDataHalf_3rd],(uint32_t)sendMem0,128);
+					HAL_DMA_PollForTransfer (&hdma_memtomem_dma2_channel1,HAL_DMA_FULL_TRANSFER,10);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem0,256,mem0Addr);
+					mem0Addr +=256;
+					
+					for(int i=QueDataHalf_3rd;i<QUEUELENGTH_Half;i++){
+						recBuff1[i] = recBuff1[i]>>ShiftRight;
+					}
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff1[QueDataHalf_3rd],(uint32_t)sendMem1,128);
+					HAL_DMA_PollForTransfer (&hdma_memtomem_dma2_channel1,HAL_DMA_FULL_TRANSFER,10);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem1,256,mem1Addr);
+					mem1Addr +=256;
+					
 					bufferHalfFull = false;
 				}
-				if (bufferFull){
-					int ii = 0;
-					for(int i=QUEUELENGTH_Half;i<QUEUELENGTH;i++){
-						amplitude0 = (int16_t)(recBuff0[i]>>16);
-						amplitude1 = (int16_t)(recBuff1[i]>>16);
-						recMem0[ii]   = (uint8_t)amplitude0;
-						recMem0[ii+1] = (uint8_t)(amplitude0>>8);
-						recMem1[ii]   = (uint8_t)amplitude1;
-						recMem1[ii+1] = (uint8_t)(amplitude1>>8);
-						ii +=2;
+				
+				if (bufferFull){					
+					
+					for(int i=QueDataFull_1st;i<QueDataFull_3rd;i++){
+						recBuff0[i] = recBuff0[i]>>ShiftRight;
 					}
-					QSPI_Send (&hqspi,recMem0,256,mem0Addr);
-					QSPI_Send (&hqspi,recMem1,256,mem1Addr);
-					/*transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff0[QUEUELENGTH_Half],256,mem0Addr);
-					transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff1[QUEUELENGTH_Half],256,mem1Addr);*/
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff0[QueDataFull_1st],(uint32_t)sendMem0,128);
+					HAL_DMA_PollForTransfer (&hdma_memtomem_dma2_channel1,HAL_DMA_FULL_TRANSFER,10);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem0,256,mem0Addr);
 					mem0Addr +=256;
+					
+					for(int i=QueDataFull_1st;i<QueDataFull_3rd;i++){
+						recBuff1[i] = recBuff1[i]>>ShiftRight;
+					}
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff1[QueDataFull_1st],(uint32_t)sendMem1,128);
+					HAL_DMA_PollForTransfer (&hdma_memtomem_dma2_channel1,HAL_DMA_FULL_TRANSFER,10);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem1,256,mem1Addr);
 					mem1Addr +=256;
+					
+					
+					for(int i=QueDataFull_3rd;i<QUEUELENGTH;i++){
+						recBuff0[i] = recBuff0[i]>>ShiftRight;
+					}
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff0[QueDataFull_3rd],(uint32_t)sendMem0,128);
+					HAL_DMA_PollForTransfer (&hdma_memtomem_dma2_channel1,HAL_DMA_FULL_TRANSFER,10);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem0,256,mem0Addr);
+					mem0Addr +=256;
+					
+					for(int i=QueDataFull_3rd;i<QUEUELENGTH;i++){
+						recBuff1[i] = recBuff1[i]>>ShiftRight;
+					}
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff1[QueDataFull_3rd],(uint32_t)sendMem1,128);
+					HAL_DMA_PollForTransfer (&hdma_memtomem_dma2_channel1,HAL_DMA_FULL_TRANSFER,10);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem1,256,mem1Addr);
+					mem1Addr +=256;
+					
 					bufferFull = false;
 				}
 				break;
@@ -301,50 +355,77 @@ int main(void)
 				HAL_NVIC_DisableIRQ (EXTI15_10_IRQn);
 				printf("Stopped Recording and Send Data Over\n");
 			
-				if (bufferHalfFull){
-					int ii = 0;
-					for(int i=0;i<QUEUELENGTH/2;i++){
-						amplitude0 = (int16_t)(recBuff0[i]>>16);
-						amplitude1 = (int16_t)(recBuff1[i]>>16);
-						recMem0[ii]   = (uint8_t)amplitude0;
-						recMem0[ii+1] = (uint8_t)(amplitude0>>8);
-						recMem1[ii]   = (uint8_t)amplitude1;
-						recMem1[ii+1] = (uint8_t)(amplitude1>>8);
-						ii += 2;
+				if (bufferHalfFull){					
+					
+					for(int i=QueDataHalf_1st;i<QueDataHalf_3rd;i++){
+						recBuff0[i] = recBuff0[i]>>ShiftRight;
 					}
-					QSPI_Send (&hqspi,recMem0,256,mem0Addr);
-					QSPI_Send (&hqspi,recMem1,256,mem1Addr);
-					/*transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff0[0],256,mem0Addr);
-					transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff1[0],256,mem1Addr);*/
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff0[QueDataHalf_1st],(uint32_t)sendMem0,128);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem0,256,mem0Addr);
 					mem0Addr +=256;
+					
+					for(int i=QueDataHalf_1st;i<QueDataHalf_3rd;i++){
+						recBuff1[i] = recBuff1[i]>>ShiftRight;
+					}
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff1[QueDataHalf_1st],(uint32_t)sendMem1,128);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem1,256,mem1Addr);
 					mem1Addr +=256;
+					
+					
+					for(int i=QueDataHalf_3rd;i<QUEUELENGTH_Half;i++){
+						recBuff0[i] = recBuff0[i]>>ShiftRight;
+					}
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff0[QueDataHalf_3rd],(uint32_t)sendMem0,128);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem0,256,mem0Addr);
+					mem0Addr +=256;
+					
+					for(int i=QueDataHalf_3rd;i<QUEUELENGTH_Half;i++){
+						recBuff1[i] = recBuff1[i]>>ShiftRight;
+					}
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff1[QueDataHalf_3rd],(uint32_t)sendMem1,128);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem1,256,mem1Addr);
+					mem1Addr +=256;
+					
 					bufferHalfFull = false;
 				}
-				if (bufferFull){
-					int ii = 0;
-					for(int i=QUEUELENGTH/2;i<QUEUELENGTH;i++){
-						amplitude0 = (int16_t)(recBuff0[i]>>16);
-						amplitude1 = (int16_t)(recBuff1[i]>>16);
-						recMem0[ii]   = (uint8_t)amplitude0;
-						recMem0[ii+1] = (uint8_t)(amplitude0>>8);
-						recMem1[ii]   = (uint8_t)amplitude1;
-						recMem1[ii+1] = (uint8_t)(amplitude1>>8);
-						ii += 2;
+				
+				if (bufferFull){					
+					
+					for(int i=QueDataFull_1st;i<QueDataFull_3rd;i++){
+						recBuff0[i] = recBuff0[i]>>ShiftRight;
 					}
-					QSPI_Send (&hqspi,recMem0,256,mem0Addr);
-					QSPI_Send (&hqspi,recMem1,256,mem1Addr);
-					/*transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff0[QUEUELENGTH_Half],256,mem0Addr);
-					transmitQSPI = true;
-					QSPI_Send_DMA (&hqspi,(uint8_t *)&recBuff1[QUEUELENGTH_Half],256,mem1Addr);*/
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff0[QueDataFull_1st],(uint32_t)sendMem0,128);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem0,256,mem0Addr);
 					mem0Addr +=256;
+					
+					for(int i=QueDataFull_1st;i<QueDataFull_3rd;i++){
+						recBuff1[i] = recBuff1[i]>>ShiftRight;
+					}
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff1[QueDataFull_1st],(uint32_t)sendMem1,128);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem1,256,mem1Addr);
 					mem1Addr +=256;
+					
+					
+					for(int i=QueDataFull_3rd;i<QUEUELENGTH;i++){
+						recBuff0[i] = recBuff0[i]>>ShiftRight;
+					}
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff0[QueDataFull_3rd],(uint32_t)sendMem0,128);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem0,256,mem0Addr);
+					mem0Addr +=256;
+					
+					for(int i=QueDataFull_3rd;i<QUEUELENGTH;i++){
+						recBuff1[i] = recBuff1[i]>>ShiftRight;
+					}
+					HAL_DMA_Start (&hdma_memtomem_dma2_channel1,(uint32_t)&recBuff1[QueDataFull_3rd],(uint32_t)sendMem1,128);
+					QSPI_Send (&hqspi,(uint8_t *)sendMem1,256,mem1Addr);
+					mem1Addr +=256;
+					
 					bufferFull = false;
 				}
 				
 				// Recieve data from QSPI mem and send over UART
+				// First part of data is from channel 0
+				// Second part of data is from channel 1
 				mem0Addr -=256;
 				for (uint32_t addr=mem0BaseAddr; addr<=mem0Addr; addr+=256){
 					QSPI_Receive (&hqspi,recMem0,256,addr);
@@ -375,32 +456,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		/*if(HAL_OK != HAL_DFSDM_FilterRegularStart_DMA(&hdfsdm1_filter1, recBuff1, QUEUELENGTH)){
-			printf("error in filter1\n");
-			Error_Handler();
-		}
-		if(HAL_OK != HAL_DFSDM_FilterRegularStart_DMA(&hdfsdm1_filter0, recBuff0, QUEUELENGTH)){
-			printf("error in filter0\n");
-			Error_Handler();
-		}
-		printf("started\n");
-		HAL_Delay (3000);
-		
-		while (!bufferFull);
-		HAL_DFSDM_FilterRegularStop_DMA (&hdfsdm1_filter1);
-		HAL_DFSDM_FilterRegularStop_DMA (&hdfsdm1_filter0);
-		
-		printf("Sending Buffer0:\n");
-		for(int i=0;i<QUEUELENGTH;i++){
-				amplitude = (int16_t)(recBuff0[i]>>8);
-				printf("%i\n",amplitude);
-			}
-		printf("Sending Buffer1:\n");
-		for(int i=0;i<QUEUELENGTH;i++){
-				amplitude = (int16_t)(recBuff1[i]>>8);
-				printf("%i\n",amplitude);
-			}
-		printf("Finished\n");*/
 		
   }
   /* USER CODE END 3 */
@@ -452,7 +507,16 @@ void SystemClock_Config(void)
   PeriphClkInit.Dfsdm1ClockSelection = RCC_DFSDM1CLKSOURCE_PCLK;
   PeriphClkInit.PLLSAI1.PLLSAI1Source = RCC_PLLSOURCE_HSI;
   PeriphClkInit.PLLSAI1.PLLSAI1M = 4;
-  PeriphClkInit.PLLSAI1.PLLSAI1N = 77;
+  if (SampleRate == 16000) 									
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 77;
+	else if(SampleRate == 24000)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 35;
+	else if(SampleRate == 32000)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 84;
+	else if(SampleRate == 40000)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 63;
+	else if(SampleRate == 48000)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 70;
   PeriphClkInit.PLLSAI1.PLLSAI1P = RCC_PLLP_DIV7;
   PeriphClkInit.PLLSAI1.PLLSAI1Q = RCC_PLLQ_DIV2;
   PeriphClkInit.PLLSAI1.PLLSAI1R = RCC_PLLR_DIV2;
@@ -478,7 +542,31 @@ static void MX_DFSDM1_Init(void)
 {
 
   /* USER CODE BEGIN DFSDM1_Init 0 */
-
+	/*																					// Add this part to the above function whenever recreating code from cube
+	if (SampleRate == 16000) 									
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 77;
+	else if(SampleRate == 24000)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 35;
+	else if(SampleRate == 32000)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 84;
+	else if(SampleRate == 40000)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 63;
+	else if(SampleRate == 48000)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 70;
+	*/
+	int clockdivider;														// Add clockdivider instead of the value whenever recreating code from cube
+	if (SampleRate == 16000)
+		clockdivider = 43;
+	else if (SampleRate == 24000)
+		clockdivider = 13;
+	else if (SampleRate == 32000)
+		clockdivider = 23;
+	else if (SampleRate == 40000)
+		clockdivider = 14;
+	else if (SampleRate == 48000)
+		clockdivider = 13;
+	
+	
   /* USER CODE END DFSDM1_Init 0 */
 
   /* USER CODE BEGIN DFSDM1_Init 1 */
@@ -509,7 +597,7 @@ static void MX_DFSDM1_Init(void)
   hdfsdm1_channel1.Instance = DFSDM1_Channel1;
   hdfsdm1_channel1.Init.OutputClock.Activation = ENABLE;
   hdfsdm1_channel1.Init.OutputClock.Selection = DFSDM_CHANNEL_OUTPUT_CLOCK_AUDIO;
-  hdfsdm1_channel1.Init.OutputClock.Divider = 43;
+  hdfsdm1_channel1.Init.OutputClock.Divider = clockdivider;
   hdfsdm1_channel1.Init.Input.Multiplexer = DFSDM_CHANNEL_EXTERNAL_INPUTS;
   hdfsdm1_channel1.Init.Input.DataPacking = DFSDM_CHANNEL_STANDARD_MODE;
   hdfsdm1_channel1.Init.Input.Pins = DFSDM_CHANNEL_FOLLOWING_CHANNEL_PINS;
@@ -526,7 +614,7 @@ static void MX_DFSDM1_Init(void)
   hdfsdm1_channel2.Instance = DFSDM1_Channel2;
   hdfsdm1_channel2.Init.OutputClock.Activation = ENABLE;
   hdfsdm1_channel2.Init.OutputClock.Selection = DFSDM_CHANNEL_OUTPUT_CLOCK_AUDIO;
-  hdfsdm1_channel2.Init.OutputClock.Divider = 43;
+  hdfsdm1_channel2.Init.OutputClock.Divider = clockdivider;
   hdfsdm1_channel2.Init.Input.Multiplexer = DFSDM_CHANNEL_EXTERNAL_INPUTS;
   hdfsdm1_channel2.Init.Input.DataPacking = DFSDM_CHANNEL_STANDARD_MODE;
   hdfsdm1_channel2.Init.Input.Pins = DFSDM_CHANNEL_SAME_CHANNEL_PINS;
@@ -571,8 +659,8 @@ static void MX_QUADSPI_Init(void)
   /* USER CODE END QUADSPI_Init 1 */
   /* QUADSPI parameter configuration*/
   hqspi.Instance = QUADSPI;
-  hqspi.Init.ClockPrescaler = 3;
-  hqspi.Init.FifoThreshold = 2;
+  hqspi.Init.ClockPrescaler = 0;
+  hqspi.Init.FifoThreshold = 1;
   hqspi.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_NONE;
   hqspi.Init.FlashSize = 22;
   hqspi.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_1_CYCLE;
@@ -584,6 +672,53 @@ static void MX_QUADSPI_Init(void)
   /* USER CODE BEGIN QUADSPI_Init 2 */
 
   /* USER CODE END QUADSPI_Init 2 */
+
+}
+
+/**
+  * @brief TIM1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM1_Init(void)
+{
+
+  /* USER CODE BEGIN TIM1_Init 0 */
+
+  /* USER CODE END TIM1_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM1_Init 1 */
+
+  /* USER CODE END TIM1_Init 1 */
+  htim1.Instance = TIM1;
+  htim1.Init.Prescaler = 79;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 0;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim1.Init.RepetitionCounter = 0;
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM1_Init 2 */
+
+  /* USER CODE END TIM1_Init 2 */
 
 }
 
@@ -624,12 +759,30 @@ static void MX_USART1_UART_Init(void)
 
 /** 
   * Enable DMA controller clock
+  * Configure DMA for memory to memory transfers
+  *   hdma_memtomem_dma2_channel1
   */
 static void MX_DMA_Init(void) 
 {
 
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
+  __HAL_RCC_DMA2_CLK_ENABLE();
+
+  /* Configure DMA request hdma_memtomem_dma2_channel1 on DMA2_Channel1 */
+  hdma_memtomem_dma2_channel1.Instance = DMA2_Channel1;
+  hdma_memtomem_dma2_channel1.Init.Request = DMA_REQUEST_0;
+  hdma_memtomem_dma2_channel1.Init.Direction = DMA_MEMORY_TO_MEMORY;
+  hdma_memtomem_dma2_channel1.Init.PeriphInc = DMA_PINC_ENABLE;
+  hdma_memtomem_dma2_channel1.Init.MemInc = DMA_MINC_ENABLE;
+  hdma_memtomem_dma2_channel1.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
+  hdma_memtomem_dma2_channel1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+  hdma_memtomem_dma2_channel1.Init.Mode = DMA_NORMAL;
+  hdma_memtomem_dma2_channel1.Init.Priority = DMA_PRIORITY_LOW;
+  if (HAL_DMA_Init(&hdma_memtomem_dma2_channel1) != HAL_OK)
+  {
+    Error_Handler( );
+  }
 
   /* DMA interrupt init */
   /* DMA1_Channel4_IRQn interrupt configuration */
@@ -731,7 +884,7 @@ static void QSPI_WriteEnable(QSPI_HandleTypeDef *QSPIHandle)
 }
 
 /**
-  * @brief  This function read the SR of the memory and wait the EOP.
+  * @brief  This function read the SR of the memory and wait the EOP. Blocking mode
   * @param  hqspi: QSPI handle
   * @retval None
   */
@@ -760,6 +913,36 @@ static void QSPI_AutoPollingMemReady(QSPI_HandleTypeDef *QSPIHandle)
     Error_Handler();
   }
 }
+/**
+  * @brief  This function read the SR of the memory and wait the EOP. Non-Blocking mode
+  * @param  hqspi: QSPI handle
+  * @retval None
+  */
+static void QSPI_AutoPollingMemReadyIT(QSPI_HandleTypeDef *QSPIHandle)
+{
+  QSPI_AutoPollingTypeDef sConfig;
+
+  /* Configure automatic polling mode to wait for memory ready ------ */  
+  
+	QSPI_Cmd.Instruction				= 0x05;
+	QSPI_Cmd.Address						= 0;
+	QSPI_Cmd.AddressMode				= QSPI_ADDRESS_NONE;
+	QSPI_Cmd.DummyCycles				= 0;
+	QSPI_Cmd.DataMode						= QSPI_DATA_1_LINE;
+	QSPI_Cmd.NbData							= 1;
+
+  sConfig.Match           = 0x00;
+  sConfig.Mask            = 0x01;
+  sConfig.MatchMode       = QSPI_MATCH_MODE_AND;
+  sConfig.StatusBytesSize = 1;
+  sConfig.Interval        = 0x10;
+  sConfig.AutomaticStop   = QSPI_AUTOMATIC_STOP_ENABLE;
+
+  if (HAL_QSPI_AutoPolling_IT(QSPIHandle, &QSPI_Cmd, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
 static void QSPI_Erase(QSPI_HandleTypeDef *QSPIHandle)
 {
 	//	Erase whole chip before programming
@@ -776,7 +959,7 @@ static void QSPI_Erase(QSPI_HandleTypeDef *QSPIHandle)
 
 static void QSPI_Initilize(QSPI_HandleTypeDef *QSPIHandle)
 {
-	uint8_t data;
+	uint8_t data[3];
 	QSPI_Cmd.InstructionMode		= QSPI_INSTRUCTION_1_LINE;
 	QSPI_Cmd.AddressSize				= QSPI_ADDRESS_24_BITS;
   QSPI_Cmd.AlternateByteMode	= QSPI_ALTERNATE_BYTES_NONE;
@@ -803,13 +986,45 @@ static void QSPI_Initilize(QSPI_HandleTypeDef *QSPIHandle)
 	if (HAL_QSPI_Command (QSPIHandle,&QSPI_Cmd,HAL_QSPI_TIMEOUT) != HAL_OK){
 		Error_Handler();
 	}
-	if (HAL_QSPI_Receive (QSPIHandle,&data,HAL_QSPI_TIMEOUT) != HAL_OK){
+	if (HAL_QSPI_Receive (QSPIHandle,&data[0],HAL_QSPI_TIMEOUT) != HAL_OK){
 		Error_Handler();
 	}
-	if ((data&0x40) != 0x40){
+	if ((data[0]&0x40) != 0x40){
 		Error_Handler ();
 	}
-	//printf("First RDSR : %d\n" , data);
+	//printf("Status Reg : %d\n" , data[0]);
+	
+	//  Set Status and Configuration Registers
+	data[0] = 64;
+	data[1] = 0;
+	data[2] = 2;
+	QSPI_WriteEnable (QSPIHandle);
+	QSPI_Cmd.Instruction			= 0x01;
+	QSPI_Cmd.Address					= 0;
+	QSPI_Cmd.AddressMode			= QSPI_ADDRESS_NONE;
+	QSPI_Cmd.DummyCycles			= 0;
+	QSPI_Cmd.DataMode					= QSPI_DATA_1_LINE;
+	QSPI_Cmd.NbData						= 3;
+	HAL_QSPI_Command (QSPIHandle,&QSPI_Cmd,HAL_QSPI_TIMEOUT);
+	HAL_QSPI_Transmit (QSPIHandle,data,HAL_QSPI_TIMEOUT);
+	QSPI_AutoPollingMemReady (QSPIHandle);
+	
+	HAL_Delay (100);
+	
+	//	Read Configuration Register
+	QSPI_Cmd.Instruction			= 0x15;
+	QSPI_Cmd.Address					= 0;
+	QSPI_Cmd.AddressMode			= QSPI_ADDRESS_NONE;
+	QSPI_Cmd.DummyCycles			= 0;
+	QSPI_Cmd.DataMode					= QSPI_DATA_1_LINE;
+	QSPI_Cmd.NbData						= 2;
+	if (HAL_QSPI_Command (QSPIHandle,&QSPI_Cmd,HAL_QSPI_TIMEOUT) != HAL_OK){
+		Error_Handler();
+	}
+	if (HAL_QSPI_Receive (QSPIHandle,&data[0],HAL_QSPI_TIMEOUT) != HAL_OK){
+		Error_Handler();
+	}
+	//printf("Configuration Reg : %d,%d\n" , data[0], data[1]);
 
 	//	Erase whole chip before programming
 	//QSPI_WriteEnable (QSPIHandle);
@@ -829,6 +1044,7 @@ static void QSPI_Send(QSPI_HandleTypeDef *QSPIHandle, uint8_t *sendData, uint32_
 	if (NbData>256){	// Max send data one page (256 Bytes)
 		Error_Handler();
 	}
+	while (!qspiSendReady);
 	QSPI_WriteEnable (QSPIHandle);
 	QSPI_Cmd.Instruction			= 0x38;
 	QSPI_Cmd.Address					= Addr;
@@ -836,27 +1052,10 @@ static void QSPI_Send(QSPI_HandleTypeDef *QSPIHandle, uint8_t *sendData, uint32_
 	QSPI_Cmd.DummyCycles			= 0;
 	QSPI_Cmd.DataMode					= QSPI_DATA_4_LINES;
 	QSPI_Cmd.NbData						= NbData;
-	HAL_QSPI_Command (QSPIHandle,&QSPI_Cmd,HAL_QSPI_TIMEOUT);
-	HAL_QSPI_Transmit (QSPIHandle,sendData,HAL_QSPI_TIMEOUT);
-	QSPI_AutoPollingMemReady (QSPIHandle);
-	
-}
-
-static void QSPI_Send_DMA(QSPI_HandleTypeDef *QSPIHandle, uint8_t *sendData, uint32_t NbData, uint32_t Addr)
-{
-	if (NbData>256){	// Max send data one page (256 Bytes)
-		Error_Handler();
-	}
-	QSPI_WriteEnable (QSPIHandle);
-	QSPI_Cmd.Instruction			= 0x38;
-	QSPI_Cmd.Address					= Addr;
-	QSPI_Cmd.AddressMode			= QSPI_ADDRESS_4_LINES;
-	QSPI_Cmd.DummyCycles			= 0;
-	QSPI_Cmd.DataMode					= QSPI_DATA_4_LINES;
-	QSPI_Cmd.NbData						= NbData;
-	HAL_QSPI_Command (QSPIHandle,&QSPI_Cmd,HAL_QSPI_TIMEOUT);
-	HAL_QSPI_Transmit_DMA (QSPIHandle,sendData);
-	QSPI_AutoPollingMemReady (QSPIHandle);
+	HAL_QSPI_Command (QSPIHandle,&QSPI_Cmd,1);
+	HAL_QSPI_Transmit (QSPIHandle,sendData,1);
+	QSPI_AutoPollingMemReadyIT (QSPIHandle);
+	qspiSendReady = false;
 	
 }
 
