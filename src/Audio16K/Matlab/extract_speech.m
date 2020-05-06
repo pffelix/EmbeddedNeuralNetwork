@@ -2,11 +2,11 @@
 ir_fs = 16000;
 speech_fs = 16000;
 mic_N = 2;
-filename_speech = "cmu_us_awb_arctic";
-filename_ir = "16k_1_180degree";
+%filename_speech = "cmu_us_awb_arctic";
+%filename_ir = "16k_1_180degree";
 filepath_speech = "../../../../database/cmu_us/" +  filename_speech + "/" + "wav" + "/";
-filepath_ir = "../../../../recording/ir/" + filename + "_short.wav";
-filepath_output = "../../../../recording/speech/" + filename_ir +  "_" + filename_speech;
+filepath_ir = "../../../../recording/ir/" + filename_ir + "_short.wav";
+filepath_output = "../../../../recording/speech/";
 
 %% load impulse response
 ir = audioread(filepath_ir);
@@ -37,6 +37,6 @@ for speech_file_n=1:speech_files_N
     irspeech = irspeech ./ max(max(abs(irspeech)));
 
     %% output
-    audiowrite(filepath_output + "_" + speech_file_n + ".wav", irspeech, fs);
+    audiowrite(filepath_output + filename_speech + "_" + speech_file_n + "_" + filename_ir + ".wav", irspeech, fs);
 
 end

@@ -35,9 +35,10 @@ sweeprec_N = length(sweeprec);
 
 %% optimize recorded sweep
 if filter_sweeprec
-    wn = [10 7900]/(sweeprec_fs/2); % filter band
-    [b,a] = butter (nOrder,wn);
-    sweeprec = filter(b,a,sweeprec);
+    %wn = [10 7900]/(sweeprec_fs/2); % filter band
+    %[b,a] = butter (nOrder,wn);
+    %sweeprec = filter(b,a,sweeprec);
+    sweeprec = highpass(sweeprec, 20, sweeprec_fs);
 end
 
 
