@@ -32,32 +32,20 @@ Y = []
 for folder in folderName:
     for i in os.listdir(folderPath + folder):           # iteration over all data files
         
+        # get meta data
         deg = int(i[i.rfind("_")+1:i.find("degree")])/180*math.pi # read angle
         dist = 1 # read distance
         number = int(i[i.rfind("arctic")+7:i.find(str(math.ceil(fs/1000)) + "k")-1]) # read file number
-    
-    
-        fs, data = wavfile.read(folderPath + folder + "/" + i) # reading data file
-    
-        #l = int(np.size(data)/2)                  # split the two audio channels
-        l = int(len(data))
+        
+        # read data file
+        fs, data = wavfile.read(folderPath + folder + "/" + i)
 
-    
+        # filter
         sos = signal.butter(filterOrder, filterBand, 'bp', fs=fs, output='sos')
         audioCh1Filtered = signal.sosfilt(sos, data[:,0])
         audioCh2Filtered = signal.sosfilt(sos, data[:,1])
     
-        #l = int(np.size(audioCh1Filtered))
-        l = int(len(audioCh1Filtered))
-    
-        #tempData = np.asarray(list(windowed(list(audioCh1Filtered), n=int(windowSize*fs), step=int(windowIncrease*fs))))
-        #audioCh1Data = np.append(audioCh1Data,tempData[0:-1,:],axis=0)
-    
-        #tempData = np.asarray(list(windowed(list(audioCh2Filtered), n=int(windowSize*fs), step=int(windowIncrease*fs))))
-        #audioCh2Data = np.append(audioCh2Data,tempData[0:-1,:],axis=0)
-    
-        #Y = np.append(Y,np.asarray(list(repeat([dist,deg],np.size(tempData[0:-1,0])))),axis=0)
-    
+        # window (rectangular)
         tempData = list(more_itertools.windowed(audioCh1Filtered, n=int(windowSize*fs), step=int(windowIncrease*fs)))
         tempData.pop()
         audioCh1Data.extend(tempData)
@@ -66,8 +54,9 @@ for folder in folderName:
         tempData.pop()
         audioCh2Data.extend(tempData)
     
+        # resphape into one array
         dataSize = (np.shape(tempData))[0]
-        Y.extend(list(repeat([dist,deg],dataSize))) 
+        Y.extend(list(np.repeat([dist,deg],dataSize))) 
     
-    
+        # log
         print (np.shape(audioCh1Data),dist,deg)
