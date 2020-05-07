@@ -28,6 +28,7 @@ folderPath = "./../../../recording/speech/" + str(math.ceil(fs/1000)) + "khz" + 
 audioCh1Data = []
 audioCh2Data = []
 Y = []
+count = 0
 
 for folder in folderName:
     for i in os.listdir(folderPath + folder):           # iteration over all data files
@@ -39,18 +40,21 @@ for folder in folderName:
         
         # read data file
         fs, data = wavfile.read(folderPath + folder + "/" + i)
-
+        tempData = data
+        audioCh1 = data[:,0]
+        audioCh2 = data[:,1]
+        
         # filter
-        sos = signal.butter(filterOrder, filterBand, 'bp', fs=fs, output='sos')
-        audioCh1Filtered = signal.sosfilt(sos, data[:,0])
-        audioCh2Filtered = signal.sosfilt(sos, data[:,1])
+        #sos = signal.butter(filterOrder, filterBand, 'bp', fs=fs, output='sos')
+        #audioCh1 = signal.sosfilt(sos, audioCh1)
+        #audioCh2 = signal.sosfilt(sos, audioCh2)
     
         # window (rectangular)
-        tempData = list(more_itertools.windowed(audioCh1Filtered, n=int(windowSize*fs), step=int(windowIncrease*fs)))
+        tempData = list(more_itertools.windowed(audioCh1, n=int(windowSize*fs), step=int(windowIncrease*fs)))
         tempData.pop()
         audioCh1Data.extend(tempData)
     
-        tempData = list(more_itertools.windowed(audioCh2Filtered, n=int(windowSize*fs), step=int(windowIncrease*fs)))
+        tempData = list(more_itertools.windowed(audioCh2, n=int(windowSize*fs), step=int(windowIncrease*fs)))
         tempData.pop()
         audioCh2Data.extend(tempData)
     
@@ -59,4 +63,4 @@ for folder in folderName:
         Y.extend(list(np.repeat([dist,deg],dataSize))) 
     
         # log
-        print (np.shape(audioCh1Data),dist,deg)
+        print (i)
