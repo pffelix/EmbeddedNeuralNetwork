@@ -26,7 +26,7 @@ windowIncrease = 0.1 #in sec
 windowSize = 5 #in sec
 filterOrder = 10
 filterBand = [200,5000] #in Hertz
-folderName = ["cmu_us_bdl_arctic", "cmu_us_awb_arctic", "cmu_us_clb_arctic", "cmu_us_jmk_arctic", "cmu_us_ksp_arctic", "cmu_us_rms_arctic", "cmu_us_slt_arctic"]
+folderName = ["cmu_us_bdl_arctic", "cmu_us_awb_arctic", "cmu_us_clb_arctic", "cmu_us_jmk_arctic"] # , "cmu_us_ksp_arctic", "cmu_us_rms_arctic", "cmu_us_slt_arctic"
 folderPath = "./../../../recording/speech/" + str(math.ceil(fs/1000)) + "khz" + "/"
 #audioCh1Data = np.ndarray([0,windowSize*fs])
 #audioCh2Data = np.ndarray([0,windowSize*fs])
@@ -38,8 +38,10 @@ audioCh1Data = []
 audioCh2Data = []
 Y = []
 count = 0
+folderN = len(folderName)
+data = np.zeros((folderN, samplesN, angleN, filesN, micN), dtype = np.int16)
 
-for folder in folderName:
+for folder_i in range(folderN):
     if readBatchOn:
         # get meta data
         deg = np.linspace(0, 315, 8)
@@ -49,18 +51,20 @@ for folder in folderName:
         
         # read data file
         print ("read data file")
-        fs, data = wavfile.read(folderPath + folder + "/" + "all.wav")
+        fs, data_i = wavfile.read(folderPath + folder + "/" + "all.wav")
         print ("finish data file")
         
         # filter
         if filterOn:
             sos = signal.butter(filterOrder, filterBand, 'bp', fs=fs, output='sos')
-            data[:,0] = signal.sosfilt(sos, data[:,0])
-            data[:,1] = signal.sosfilt(sos, data[:,1])
+            data_i[:,0] = signal.sosfilt(sos, data_i[:,0])
+            data_i[:,1] = signal.sosfilt(sos, data_i[:,1])
             
-        # reshape into invidual wav files
-        data = np.reshape(data, (samplesN, filesN, angleN, micN))
+        # reshape into invidual databases
+        data_i = np.reshape(data_i, (samplesN, angleN, filesN, micN))
         
+        # merge into one database
+        data[folder_i,:,:,:,:] = data_i
         
     else:
         for i in os.listdir(folderPath + folder):           # iteration over all single data files
