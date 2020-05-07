@@ -2,7 +2,7 @@
 ir_type = "16k";
 ir_version = "1";
 ir_angles = 0:45:359; 
-speech_types = ["cmu_us_bdl_arctic", "cmu_us_jmk_arctic", "cmu_us_ksp_arctic", "cmu_us_rms_arctic", "cmu_us_slt_arctic", "cmu_us_clb_arctic"];
+speech_types = ["cmu_us_awb_arctic", "cmu_us_bdl_arctic", "cmu_us_jmk_arctic", "cmu_us_ksp_arctic", "cmu_us_rms_arctic", "cmu_us_slt_arctic", "cmu_us_clb_arctic"];
 mic_N = 2;
 ang_N = 8;
 fs = 16000;
@@ -43,5 +43,5 @@ for j=1:length(speech_types)
 
     end
     %% output
-    audiowrite(filepath_speech + "all.wav", data, fs);    
+    audiowrite(filepath_speech + speech_types(j) + ".wav", data, fs);    
 end

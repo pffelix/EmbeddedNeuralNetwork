@@ -17,6 +17,7 @@ from keras import utils
 from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D,BatchNormalization,GRU,Bidirectional,Reshape
 
 # parameters
+user = "Felix"
 fs = 16000;
 filesN = 1132;
 angleN = 8;
@@ -27,7 +28,10 @@ windowSize = 5 #in sec
 filterOrder = 10
 filterBand = [200,5000] #in Hertz
 folderName = ["cmu_us_bdl_arctic", "cmu_us_awb_arctic", "cmu_us_clb_arctic", "cmu_us_jmk_arctic"] # , "cmu_us_ksp_arctic", "cmu_us_rms_arctic", "cmu_us_slt_arctic"
-folderPath = "./../../../recording/speech/" + str(math.ceil(fs/1000)) + "khz" + "/"
+if user == "Felix":
+    folderPath = "./../../../../Shared/sharing/recording/speech_database/" + str(math.ceil(fs/1000)) + "khz" + "/"
+else:
+    folderPath = "./../../../../Shared/sharing/recording/speech_database/" + str(math.ceil(fs/1000)) + "khz" + "/"
 #audioCh1Data = np.ndarray([0,windowSize*fs])
 #audioCh2Data = np.ndarray([0,windowSize*fs])
 readBatchOn = True;
@@ -51,7 +55,7 @@ for folder_i in range(folderN):
         
         # read data file
         print ("read data file")
-        fs, data_i = wavfile.read(folderPath + folder + "/" + "all.wav")
+        fs, data_i = wavfile.read(folderPath + folderName[folder_i] + "/" + folderName[folder_i] + ".wav")
         print ("finish data file")
         
         # filter
