@@ -3,6 +3,8 @@ ir_type = "16k";
 ir_version = "1";
 ir_angles = 0:45:359; 
 speech_types = ["cmu_us_awb_arctic", "cmu_us_bdl_arctic", "cmu_us_jmk_arctic", "cmu_us_ksp_arctic", "cmu_us_rms_arctic", "cmu_us_slt_arctic", "cmu_us_clb_arctic"];
+featuretype = "magnitude"; % fft, raw
+fftN = 512;
 mic_N = 2;
 ang_N = 8;
 fs = 16000;
@@ -10,6 +12,9 @@ max_filesamples = 113599;
 max_files = 1132;
 
 %% run
+if featuretype == "magnitude"
+    max_filesamples = ceil(max_filesamples / (fftN / 2 + 1)) * (fftN / 2 + 1);
+end
 for j=1:length(speech_types)
     filename_speech = speech_types(j);
     fprintf(filename_speech + "\n");
@@ -20,7 +25,7 @@ for j=1:length(speech_types)
     speech_files = {speech_files.name};
     speech_files = speech_files(3:end);
     speech_files_N = max_files;
-    data = zeros(max_filesamples * speech_files_N * ang_N, mic_N);
+    data = zeros(max_filesamples * speech_files_N * ang_N, mic_N, "int16");
     output_file_n = 0;
     fprintf("process:" + speech_types(j) + "\n");
     for speech_file_n = 1:speech_files_N
@@ -32,16 +37,26 @@ for j=1:length(speech_types)
             %% load speech file
             filename_ir = ir_type + "_" + ir_version + "_" + ir_angles(i) + "degree";
             try
-                irspeech = audioread(filepath_speech + filename_speech + "_" + speech_file_n + "_" + filename_ir + ".wav");
+                raw = audioread(filepath_speech + filename_speech + "_" + speech_file_n + "_" + filename_ir + ".wav");
             catch
                 break
             end
-            speech_N = length(irspeech);
-            index = ((output_file_n - 1) * max_filesamples) + 1;
-            data(index:index + speech_N - 1, :) = irspeech;
+            %% features
+            index = ((output_file_n - 1) * max_filesamples) + 1;            
+            if featuretype == "magnitude"
+                for mic_i = 1:mic_N
+                    feature = spectrogram(raw(:, mic_i), fftN);
+                    feature = abs(feature);
+                    feature = feature(:);
+                    feature_N = length(feature);
+                    data(index:index + feature_N - 1, mic_i) = feature;
+                end
+            else
+                feature_N = length(feature);
+                data(index:index + feature_N - 1, :) = feature;
+            end
         end
-
     end
     %% output
-    audiowrite(filepath_speech + speech_types(j) + ".wav", data, fs);    
+    audiowrite(filepath_speech + speech_types(j) + "_" + featuretype + ".wav", data, fs);    
 end
