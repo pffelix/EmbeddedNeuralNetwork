@@ -1,5 +1,5 @@
 %% paramters
-type = "16k";
+type = "48k";
 version = "1";
 angles = 0:45:359; 
 

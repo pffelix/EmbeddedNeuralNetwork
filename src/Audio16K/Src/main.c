@@ -32,11 +32,12 @@
 														24000   -->>  24038
 														32000   -->>  32609
 														40000   -->>  40179
+														44100		-->>  44118
 														48000   -->>  48077
 */
-#define SampleRate	48000 //16000/24000/32000/40000/48000
+#define SampleRate	44100 //16000/24000/3o2000/40000/48000
 
-#define ShiftRight	14		// Adjust Shift right to your loudness
+#define ShiftRight	16		// Adjust Shift right to your loudness
 
 #define mem0BaseAddr 0x00000000
 #define mem1BaseAddr 0x00400000
@@ -515,6 +516,8 @@ void SystemClock_Config(void)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 84;
 	else if(SampleRate == 40000)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 63;
+	else if(SampleRate == 44100)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 84;
 	else if(SampleRate == 48000)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 70;
   PeriphClkInit.PLLSAI1.PLLSAI1P = RCC_PLLP_DIV7;
@@ -563,6 +566,8 @@ static void MX_DFSDM1_Init(void)
 		clockdivider = 23;
 	else if (SampleRate == 40000)
 		clockdivider = 14;
+	else if (SampleRate == 44100)
+		clockdivider = 17;
 	else if (SampleRate == 48000)
 		clockdivider = 13;
 	

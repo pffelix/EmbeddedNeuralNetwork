@@ -2,8 +2,8 @@
 clear
 clc
 nOrder = 6;
-fs = 15988;
-filepath = '../../../../recording/recs/16k_1_0degree.log';
+fs = 44179;
+filepath = "../../../../recording/rec/44k_1_0degree.log";
 fileID = fopen(filepath,'r');
 %y = fscanf (fileID);
 y = regexp(fileread(filepath), '\r?\n', 'split');

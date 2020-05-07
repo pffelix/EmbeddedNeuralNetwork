@@ -37,6 +37,6 @@ for speech_file_n=1:speech_files_N
     irspeech = irspeech ./ max(max(abs(irspeech)));
 
     %% output
-    audiowrite(filepath_output + filename_speech + "_" + speech_file_n + "_" + filename_ir + ".wav", irspeech, fs);
+    audiowrite(filepath_output + filename_speech + "/" + filename_speech + "_" + speech_file_n + "_" + filename_ir + ".wav", irspeech, fs);
 
 end
