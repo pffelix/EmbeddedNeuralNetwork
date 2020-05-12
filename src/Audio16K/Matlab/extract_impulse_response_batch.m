@@ -1,7 +1,7 @@
 %% paramters
 type = "48k";
 version = "1";
-angles = 0:45:359; 
+angles = 0:30:359; %0:30:359
 
 %% run
 for i=1:length(angles)

@@ -18,14 +18,16 @@ end
 for j=1:length(speech_types)
     filename_speech = speech_types(j);
     fprintf(filename_speech + "\n");
-    filepath_output = "../../../../recording/speech/";
-    filepath_speech = filepath_output + fs/1000 + "khz/" + filename_speech + "/";
+    filepath_input = "../../../../recording/speech/";
+    filepath_output = "../../../../../Shared/SoundLocalization/speech_database/";
+    filepath_speech_input = filepath_input + fs/1000 + "khz/" + filename_speech + "/";
+    filepath_speech_output = filepath_output + fs/1000 + "khz/" + "/";
     %% generat speech files index
-    speech_files = dir(filepath_speech);
+    speech_files = dir(filepath_speech_input);
     speech_files = {speech_files.name};
     speech_files = speech_files(3:end);
     speech_files_N = max_files;
-    data = zeros(max_filesamples * speech_files_N * ang_N, mic_N, "int16");
+    data = zeros(max_filesamples * speech_files_N * ang_N, mic_N, "single");
     output_file_n = 0;
     fprintf("process:" + speech_types(j) + "\n");
     for speech_file_n = 1:speech_files_N
@@ -37,7 +39,7 @@ for j=1:length(speech_types)
             %% load speech file
             filename_ir = ir_type + "_" + ir_version + "_" + ir_angles(i) + "degree";
             try
-                raw = audioread(filepath_speech + filename_speech + "_" + speech_file_n + "_" + filename_ir + ".wav");
+                raw = audioread(filepath_speech_input + filename_speech + "_" + speech_file_n + "_" + filename_ir + ".wav");
             catch
                 break
             end
@@ -51,6 +53,7 @@ for j=1:length(speech_types)
                     feature_N = length(feature);
                     data(index:index + feature_N - 1, mic_i) = feature;
                 end
+                data(index:index + feature_N - 1, :) =  data(index:index + feature_N - 1, :) / max(max(abs(data(index:index + feature_N - 1, :))));
             else
                 feature_N = length(feature);
                 data(index:index + feature_N - 1, :) = feature;
@@ -58,5 +61,5 @@ for j=1:length(speech_types)
         end
     end
     %% output
-    audiowrite(filepath_speech + speech_types(j) + "_" + featuretype + ".wav", data, fs);    
+    audiowrite(filepath_speech_output + speech_types(j) + "_" + featuretype + ".wav", data, fs);    
 end

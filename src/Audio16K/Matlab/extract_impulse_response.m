@@ -1,7 +1,7 @@
 %% parameters
-sweeprec_fs = 44118;
-sweepinverse_fs = 44100;
-filename = "44k_1_0degree";
+sweeprec_fs = 15988;
+sweepinverse_fs = 16000;
+filename = "16k_1_0degree";
 filepath_sweeprec = "../../../../recording/rec/" + filename + ".log";
 filepath_sweepinverse = "../../../../recording/sweep/inverse_10Hz_8kHz_linear.wav";
 filepath_output = "../../../../recording/ir/" + filename + ".wav";
@@ -9,7 +9,7 @@ filepath_output_short = "../../../../recording/ir/" + filename + "_short.wav";
 nOrder = 60;
 mic_N = 2;
 filter_sweeprec = true;
-downsample = false; % else upsample to higher fs
+downsample = true; % else upsample to higher fs
 ir_average = true;
 ir_startthreshold = 0.1; % amplitude
 ir_startoffset_s = -0.005; % s
