@@ -210,19 +210,24 @@ void fftRuntime(void){
 		float* cmsisVectorBuffer = (float*) calloc(2*vectorSize, sizeof(float));
 	
 		for(int i=0;i<vectorSize;i++){
+			// set
 			vectorReal[i] = 1;
-		}
-		
-		arm_cfft_radix2_instance_f32* fft_struct = (arm_cfft_radix2_instance_f32*) calloc(1, sizeof(arm_cfft_radix2_instance_f32));
-		arm_cfft_radix2_init_f32(fft_struct, vectorSize, 0, 0);
-		
-		for(int i=0;i<vectorSize;i++){
+			vectorImag[i] = 1;
+			
+			// merge
 			cmsisVectorBuffer[2*i] = vectorReal[i];
 			cmsisVectorBuffer[2*i+1] = vectorImag[i];
 		}
+		
 
+		// init fft libarary
+		arm_cfft_radix2_instance_f32* fft_struct = (arm_cfft_radix2_instance_f32*) calloc(1, sizeof(arm_cfft_radix2_instance_f32));
+		arm_cfft_radix2_init_f32(fft_struct, vectorSize, 0, 0);
+		
+		// run fft calculation
 		arm_cfft_radix2_f32(fft_struct, cmsisVectorBuffer);
 	
+		// free memory
 		free(vectorReal);
 		free(vectorImag);
 }
@@ -290,6 +295,7 @@ int main(void)
 				recording = false;
 				HAL_Delay (1000);
 				break;
+			
 			case 1: //Start Recording and send to mem on every half full
 				
 				// Test run FFT
