@@ -24,7 +24,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
+#include <arm_math.h>
 
 /*
 ********************      Exact Sample Rates:
@@ -192,6 +194,41 @@ void HAL_QSPI_StatusMatchCallback(QSPI_HandleTypeDef *hqspi)
 /* USER CODE END 0 */
 
 /**
+  * @brief FFT calculation
+  * @retval None
+  */
+void fftRuntime(void){
+		int vectorSize = 64;
+	
+		float* vectorReal = (float*) calloc(vectorSize, sizeof(float));
+		float* vectorImag = (float*) calloc(vectorSize, sizeof(float));
+	
+		for(int i=0;i<vectorSize;i++){
+			vectorReal[i] = 1;
+		}
+	
+		float* cmsisVectorBuffer = (float*) calloc(2*vectorSize, sizeof(float));
+	
+		for(int i=0;i<vectorSize;i++){
+			vectorReal[i] = 1;
+		}
+		
+		arm_cfft_radix2_instance_f32* fft_struct = (arm_cfft_radix2_instance_f32*) calloc(1, sizeof(arm_cfft_radix2_instance_f32));
+		arm_cfft_radix2_init_f32(fft_struct, vectorSize, 0, 0);
+		
+		for(int i=0;i<vectorSize;i++){
+			cmsisVectorBuffer[2*i] = vectorReal[i];
+			cmsisVectorBuffer[2*i+1] = vectorImag[i];
+		}
+
+		arm_cfft_radix2_f32(fft_struct, cmsisVectorBuffer);
+	
+		free(vectorReal);
+		free(vectorImag);
+}
+
+
+/**
   * @brief  The application entry point.
   * @retval int
   */
@@ -255,6 +292,11 @@ int main(void)
 				break;
 			case 1: //Start Recording and send to mem on every half full
 				
+				// Test run FFT
+				printf("run fft\n");
+				fftRuntime();
+				printf("finish fft\n");
+
 				// Start Recording Command for both channels
 				if (recording == false){
 					recording = true;
@@ -424,6 +466,13 @@ int main(void)
 					bufferFull = false;
 				}
 				
+				
+				// Run Feature extraction
+				
+				
+				
+				
+				
 				// Recieve data from QSPI mem and send over UART
 				// First part of data is from channel 0
 				// Second part of data is from channel 1
@@ -461,6 +510,8 @@ int main(void)
   }
   /* USER CODE END 3 */
 }
+
+
 
 /**
   * @brief System Clock Configuration

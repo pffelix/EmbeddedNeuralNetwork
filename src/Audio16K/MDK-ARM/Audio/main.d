@@ -37,4 +37,9 @@ audio\main.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_tim_ex.h
 audio\main.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h
 audio\main.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h
 audio\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+audio\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 audio\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+audio\main.o: ../Drivers/CMSIS/Include/arm_math.h
+audio\main.o: ../Drivers/CMSIS/Include/core_cm4.h
+audio\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+audio\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
