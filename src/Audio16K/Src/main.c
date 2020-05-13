@@ -41,6 +41,7 @@
 
 #define ShiftRight	16		// Adjust Shift right to your loudness
 
+
 #define mem0BaseAddr 0x00000000
 #define mem1BaseAddr 0x00400000
 #define QUEUELENGTH 512
@@ -54,6 +55,7 @@
 #define QueDataFull_3rd	384
 #define QueDataFull_4th	448
 #define HAL_QSPI_TIMEOUT	180000U // 180 sec //
+
 
 /* USER CODE END Includes */
 
@@ -132,6 +134,31 @@ uint8_t state=0;
 
 uint32_t numFull=0,numDetected=0;
 
+/* Feature Extraction ---------------------------------------------------------*/
+
+// define
+#define CEILING(x,y) (((x) + (y) - 1) / (y))
+#define RecSeconds 3
+#define RecN RecSeconds * SampleRate
+#define FftN 512
+#define FfthalfN FftN / 2 + 1
+#define FftT CEILING(RecN, FftN)
+#define FeatureN RecN
+#define MicN 2
+#define UNUSEDVARIABLE(x) (void)(x)
+
+// declare
+q15_t* recBuffer;
+q15_t* fftBuffer;
+q15_t*** featureBuffer;
+arm_cfft_radix2_instance_q15* fft_struct;
+uint16_t fftt;
+uint16_t fftn;
+uint16_t micn;
+
+
+/* Program ---------------------------------------------------------*/
+
 
 #ifdef __GNUC__
 /* With GCC/RAISONANCE, small msg_info (option LD Linker->Libraries->Small msg_info
@@ -193,11 +220,15 @@ void HAL_QSPI_StatusMatchCallback(QSPI_HandleTypeDef *hqspi)
 }
 /* USER CODE END 0 */
 
+
+/* Feature Extraction ---------------------------------------------------------*/
+
+
 /**
   * @brief FFT calculation
   * @retval None
   */
-void fftRuntime(void){
+void fftMockup(void){
 		int vectorSize = 64;
 	
 		float* vectorReal = (float*) calloc(vectorSize, sizeof(float));
@@ -218,7 +249,6 @@ void fftRuntime(void){
 			cmsisVectorBuffer[2*i] = vectorReal[i];
 			cmsisVectorBuffer[2*i+1] = vectorImag[i];
 		}
-		
 
 		// init fft libarary
 		arm_cfft_radix2_instance_f32* fft_struct = (arm_cfft_radix2_instance_f32*) calloc(1, sizeof(arm_cfft_radix2_instance_f32));
@@ -232,6 +262,103 @@ void fftRuntime(void){
 		free(vectorImag);
 }
 
+/**
+  * @brief 1D dynamic array declaration
+  * @retval None
+  */
+	q15_t* ar_declare(q15_t N) {
+	q15_t *x = (q15_t*)calloc(N, sizeof(q15_t));
+	return x;
+};
+
+/**
+  * @brief 3D dynamic array declaration
+  * @retval None
+  */
+q15_t*** ar_declare3d(q15_t M, q15_t N, q15_t O) {
+	q15_t*** x = (q15_t***)calloc(M, sizeof(q15_t**));
+	if (x) {
+		for (int m = 0; m < M; m++) {
+			x[m] = (q15_t**)calloc(N, sizeof(q15_t*));
+			if (x[m]) {
+				for (int n = 0; n < N; n++) {
+					x[m][n] = (q15_t*)calloc(O, sizeof(q15_t));
+				}
+			}
+		}
+	}
+	return x;
+};
+
+/**
+  * @brief 3D dynamic array destruction
+  * @retval None
+  */
+void ar_free3d(q15_t*** x, q15_t M, q15_t N, q15_t O) {
+	UNUSEDVARIABLE(O);
+	for (int m = 0; m < M; m++) {
+		for (int n = 0; n < N; n++) {
+			free(x[m][n]);
+		}
+	}
+	free(x);
+};
+
+/**
+  * @brief Initialize feature extraction
+  * @retval None
+  */
+void featureInit(void){
+
+		// init fft library
+		fft_struct = (arm_cfft_radix2_instance_q15*) calloc(1, sizeof(arm_cfft_radix2_instance_q15));
+		arm_cfft_radix2_init_q15(fft_struct, FftN, 0, 0);
+		
+		// init buffers
+		recBuffer = ar_declare(FftN);
+		fftBuffer = ar_declare(FftN * 2);
+		featureBuffer = ar_declare3d(FftT, FfthalfN, MicN);
+		fftt = 0;
+}
+
+/**
+  * @brief Update feature extraction
+  * @retval None
+  */
+void featureUpdate(q15_t* inputBuffer){
+	
+		// fill left FFT buffer
+		for(int i = 0; i < FftN; i++){
+			fftBuffer[2 * i] = inputBuffer[i]; // real
+			fftBuffer[2 * i + 1] = 0; // imaginary
+		}
+		
+		// run fft calculation
+		arm_cfft_radix2_q15(fft_struct, fftBuffer);
+		
+		// extract magnitude
+		for(int i = 0; i < FfthalfN; i++){
+			q15_t real = fftBuffer[2 * i];
+			q15_t imag = fftBuffer[2 * i + 1];
+			arm_sqrt_q15(real * real + imag * imag, &featureBuffer[fftt][i][micn]);
+		}
+}
+
+/**
+  * @brief Finish feature extraction
+  * @retval None
+  */
+void featureFinish(void){
+	
+		// free memory
+		free(fft_struct);
+		free(fftBuffer);
+		ar_free3d(featureBuffer, FftT, FfthalfN, MicN);	
+}
+
+
+
+/* Main loop ---------------------------------------------------------*/
 
 /**
   * @brief  The application entry point.
@@ -277,6 +404,8 @@ int main(void)
 	printf("Initilize memory Done\n");
 	HAL_NVIC_EnableIRQ (EXTI15_10_IRQn);
 	
+
+	
 	
 	
   /* USER CODE END 2 */
@@ -298,11 +427,11 @@ int main(void)
 			
 			case 1: //Start Recording and send to mem on every half full
 				
-				// Test run FFT
-				printf("run fft\n");
-				fftRuntime();
-				printf("finish fft\n");
-
+			
+				// Init feature calculation
+				printf("init feature calculation\n");
+				featureInit();
+			
 				// Start Recording Command for both channels
 				if (recording == false){
 					recording = true;
@@ -472,30 +601,51 @@ int main(void)
 					bufferFull = false;
 				}
 				
-				
-				// Run Feature extraction
-				
-				
-				
-				
-				
+
+			
 				// Recieve data from QSPI mem and send over UART
 				// First part of data is from channel 0
 				// Second part of data is from channel 1
 				mem0Addr -=256;
+				micn = 0; // microphone number
+				fftn = 0; // fft bin number
+				fftt = 0; // fft window number
 				for (uint32_t addr=mem0BaseAddr; addr<=mem0Addr; addr+=256){
 					QSPI_Receive (&hqspi,recMem0,256,addr);
 					for (int i=0;i<256;i+=2){
 						amplitude0 = (int16_t)(((uint16_t) recMem0[i]) + (((uint16_t) recMem0[i+1])<<8));
 						printf ("%i\n",amplitude0);
+
+						// Update feature calculation
+						recBuffer[fftn] = amplitude0;
+						if(fftn < FftN){
+							fftn = 0;
+							featureUpdate(recBuffer);
+							fftt += 1;
+						}else{
+							fftn += 1;
+						}
 					}
 				}
 				mem1Addr -=256;
+				micn = 1;
+				fftn = 0;
+				fftt = 0;
 				for (uint32_t addr=mem1BaseAddr; addr<=mem1Addr; addr+=256){
 					QSPI_Receive (&hqspi,recMem1,256,addr);
 					for (int i=0;i<256;i+=2){
 						amplitude1 = (int16_t)(((uint16_t) recMem1[i]) + (((uint16_t) recMem1[i+1])<<8));
 						printf ("%i\n",amplitude1);
+						
+					// Update feature calculation
+						recBuffer[fftn] = amplitude0;
+						if(fftn < FftN){
+							fftn = 0;
+							featureUpdate(recBuffer);
+							fftt += 1;
+						}else{
+							fftn += 1;
+						}
 					}
 				}
 				
@@ -507,7 +657,14 @@ int main(void)
 				printf ("Erasing Done\n");
 				HAL_NVIC_EnableIRQ (EXTI15_10_IRQn);
 				state = 0;
+				
+				
+				// Finish feature calculation
+				featureFinish();
+				
 				break;
+
+
 		}
     /* USER CODE END WHILE */
 
