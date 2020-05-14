@@ -152,9 +152,9 @@ q15_t* recBuffer;
 q15_t* fftBuffer;
 q15_t*** featureBuffer;
 arm_cfft_radix2_instance_q15* fft_struct;
-uint16_t fftt;
-uint16_t fftn;
-uint16_t micn;
+uint16_t Fftt;
+uint16_t Fftn;
+uint16_t Micn;
 
 
 /* Program ---------------------------------------------------------*/
@@ -318,8 +318,42 @@ void featureInit(void){
 		recBuffer = ar_declare(FftN);
 		fftBuffer = ar_declare(FftN * 2);
 		featureBuffer = ar_declare3d(FftT, FfthalfN, MicN);
-		fftt = 0;
+		Fftt = 0;
+		Fftn = 0;
 }
+
+/**
+  * @brief Clean feature extraction
+  * @retval None
+  */
+void featureClean(void){
+
+		// clean buffers
+		Fftt = 0;
+		Fftn = 0;
+		if (featureBuffer) {
+			for (int m = 0; m < FftT; m++) {
+				for (int n = 0; n < FfthalfN; n++) {
+					for (int o = 0; n < MicN; n++) {
+						featureBuffer[m][n][o] = 0;
+					}
+				}
+			}
+		}
+		
+		if(recBuffer){
+			for (int m = 0; m < FftT; m++) {
+				recBuffer[m] = 0;
+			}
+		}
+		
+		if(fftBuffer){
+			for (int m = 0; m < FftT * 2; m++) {
+				fftBuffer[m] = 0;
+			}
+		}
+}			
+	
 
 /**
   * @brief Update feature extraction
@@ -340,7 +374,7 @@ void featureUpdate(q15_t* inputBuffer){
 		for(int i = 0; i < FfthalfN; i++){
 			q15_t real = fftBuffer[2 * i];
 			q15_t imag = fftBuffer[2 * i + 1];
-			arm_sqrt_q15(real * real + imag * imag, &featureBuffer[fftt][i][micn]);
+			arm_sqrt_q15(real * real + imag * imag, &featureBuffer[Fftt][i][Micn]);
 		}
 }
 
@@ -406,7 +440,9 @@ int main(void)
 	
 
 	
-	
+	// Init feature calculation
+	printf("init feature calculation\n");
+	featureInit();
 	
   /* USER CODE END 2 */
 
@@ -422,16 +458,12 @@ int main(void)
 				mem0Addr = mem0BaseAddr;
 				mem1Addr = mem1BaseAddr;
 				recording = false;
+				featureClean();
 				HAL_Delay (1000);
 				break;
 			
 			case 1: //Start Recording and send to mem on every half full
-				
-			
-				// Init feature calculation
-				printf("init feature calculation\n");
-				featureInit();
-			
+							
 				// Start Recording Command for both channels
 				if (recording == false){
 					recording = true;
@@ -607,9 +639,9 @@ int main(void)
 				// First part of data is from channel 0
 				// Second part of data is from channel 1
 				mem0Addr -=256;
-				micn = 0; // microphone number
-				fftn = 0; // fft bin number
-				fftt = 0; // fft window number
+				Micn = 0; // microphone number
+				Fftn = 0; // fft bin number
+				Fftt = 0; // fft window number
 				for (uint32_t addr=mem0BaseAddr; addr<=mem0Addr; addr+=256){
 					QSPI_Receive (&hqspi,recMem0,256,addr);
 					for (int i=0;i<256;i+=2){
@@ -617,20 +649,22 @@ int main(void)
 						printf ("%i\n",amplitude0);
 
 						// Update feature calculation
-						recBuffer[fftn] = amplitude0;
-						if(fftn < FftN){
-							fftn = 0;
-							featureUpdate(recBuffer);
-							fftt += 1;
-						}else{
-							fftn += 1;
+						if(Fftt < FftT){
+							recBuffer[Fftn] = amplitude0;
+							if(Fftn == FftN){
+								Fftn = 0;
+								featureUpdate(recBuffer);
+								Fftt += 1;
+							}else{
+								Fftn += 1;
+							}
 						}
 					}
 				}
 				mem1Addr -=256;
-				micn = 1;
-				fftn = 0;
-				fftt = 0;
+				Micn = 1;
+				Fftn = 0;
+				Fftt = 0;
 				for (uint32_t addr=mem1BaseAddr; addr<=mem1Addr; addr+=256){
 					QSPI_Receive (&hqspi,recMem1,256,addr);
 					for (int i=0;i<256;i+=2){
@@ -638,13 +672,15 @@ int main(void)
 						printf ("%i\n",amplitude1);
 						
 					// Update feature calculation
-						recBuffer[fftn] = amplitude0;
-						if(fftn < FftN){
-							fftn = 0;
-							featureUpdate(recBuffer);
-							fftt += 1;
-						}else{
-							fftn += 1;
+						if(Fftt < FftT){
+							recBuffer[Fftn] = amplitude0;
+							if(Fftn == FftN){
+								Fftn = 0;
+								featureUpdate(recBuffer);
+								Fftt += 1;
+							}else{
+								Fftn += 1;
+							}
 						}
 					}
 				}

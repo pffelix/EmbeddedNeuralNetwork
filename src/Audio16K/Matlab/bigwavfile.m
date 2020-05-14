@@ -10,6 +10,8 @@ ang_N = 8;
 fs = 16000;
 max_filesamples = 113599;
 max_files = 1132;
+start_threshold = 0.1;
+start_shift_s = -0.1;
 
 %% run
 if featuretype == "magnitude"
@@ -47,7 +49,16 @@ for j=1:length(speech_types)
             index = ((output_file_n - 1) * max_filesamples) + 1;            
             if featuretype == "magnitude"
                 for mic_i = 1:mic_N
-                    feature = spectrogram(raw(:, mic_i), fftN);
+                    start = raw > start_threshold;
+                    start_ix = [find(start(:,1),1) find(start(:,2),1)];
+                    start_ix = min(start_ix);
+                    start_ix = start_ix + start_shift_s * fs;
+                    if start_ix < 1
+                        start_ix = 1;
+                    end
+                    rawstart = zeros(length(raw), mic_N);
+                    rawstart(1:end-start_ix+1,:) = raw(start_ix:end,:);
+                    feature = spectrogram(rawstart(:, mic_i), fftN);
                     feature = abs(feature);
                     feature = feature(:);
                     feature_N = length(feature);
@@ -61,5 +72,5 @@ for j=1:length(speech_types)
         end
     end
     %% output
-    audiowrite(filepath_speech_output + speech_types(j) + "_" + featuretype + ".wav", data, fs);    
+    audiowrite(filepath_speech_output + speech_types(j) + "_" + featuretype + ".wav", data, fs, 'BitsPerSample',16);    
 end
