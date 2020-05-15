@@ -37,7 +37,7 @@
 														44100		-->>  44118
 														48000   -->>  48077
 */
-#define SampleRate	44100 //16000/24000/3o2000/40000/48000
+#define SampleRate	16000 //16000/24000/3o2000/40000/48000
 
 #define ShiftRight	16		// Adjust Shift right to your loudness
 
@@ -275,14 +275,16 @@ void fftMockup(void){
   * @brief 3D dynamic array declaration
   * @retval None
   */
-q15_t*** ar_declare3d(q15_t M, q15_t N, q15_t O) {
-	q15_t*** x = (q15_t***)calloc(M, sizeof(q15_t**));
+q15_t*** ar_declare3d(int M, int N, int O) {
+	q15_t*** x = (q15_t***)malloc(M * sizeof(q15_t**));
 	if (x) {
 		for (int m = 0; m < M; m++) {
-			x[m] = (q15_t**)calloc(N, sizeof(q15_t*));
+			x[m] = (q15_t**)malloc(N * sizeof(q15_t*));
 			if (x[m]) {
 				for (int n = 0; n < N; n++) {
-					x[m][n] = (q15_t*)calloc(O, sizeof(q15_t));
+					if (x[m][n]){
+						x[m][n] = (q15_t*)malloc(O * sizeof(q15_t));
+					}
 				}
 			}
 		}
@@ -331,10 +333,14 @@ void featureClean(void){
 		// clean buffers
 		Fftt = 0;
 		Fftn = 0;
+		printf("test");
 		if (featureBuffer) {
 			for (int m = 0; m < FftT; m++) {
 				for (int n = 0; n < FfthalfN; n++) {
-					for (int o = 0; n < MicN; n++) {
+					for (int o = 0; o < MicN; o++) {
+						if(n > 120){
+							printf("problem");
+						}
 						featureBuffer[m][n][o] = 0;
 					}
 				}
@@ -342,13 +348,13 @@ void featureClean(void){
 		}
 		
 		if(recBuffer){
-			for (int m = 0; m < FftT; m++) {
+			for (int m = 0; m < FftN; m++) {
 				recBuffer[m] = 0;
 			}
 		}
 		
 		if(fftBuffer){
-			for (int m = 0; m < FftT * 2; m++) {
+			for (int m = 0; m < FftN * 2; m++) {
 				fftBuffer[m] = 0;
 			}
 		}
@@ -360,21 +366,35 @@ void featureClean(void){
   * @retval None
   */
 void featureUpdate(q15_t* inputBuffer){
-	
+
 		// fill left FFT buffer
 		for(int i = 0; i < FftN; i++){
 			fftBuffer[2 * i] = inputBuffer[i]; // real
 			fftBuffer[2 * i + 1] = 0; // imaginary
 		}
-		
 		// run fft calculation
 		arm_cfft_radix2_q15(fft_struct, fftBuffer);
 		
 		// extract magnitude
+		q15_t mag_max;
+		q15_t real;
+		q15_t imag;
+		mag_max = 0;
 		for(int i = 0; i < FfthalfN; i++){
-			q15_t real = fftBuffer[2 * i];
-			q15_t imag = fftBuffer[2 * i + 1];
+			printf("%d\n", i);
+			real = fftBuffer[2 * i];
+			imag = fftBuffer[2 * i + 1];
 			arm_sqrt_q15(real * real + imag * imag, &featureBuffer[Fftt][i][Micn]);
+
+			if(featureBuffer[Fftt][i][Micn] > mag_max){
+				mag_max = featureBuffer[Fftt][i][Micn];
+			}
+			printf("%d\n", i);
+		}
+
+		// normalize magnitude
+		for(int i = 0; i < FfthalfN; i++){
+			  featureBuffer[Fftt][i][Micn] = featureBuffer[Fftt][i][Micn] / mag_max;
 		}
 }
 
@@ -458,8 +478,8 @@ int main(void)
 				mem0Addr = mem0BaseAddr;
 				mem1Addr = mem1BaseAddr;
 				recording = false;
-				featureClean();
 				HAL_Delay (1000);
+				featureClean();
 				break;
 			
 			case 1: //Start Recording and send to mem on every half full
@@ -634,7 +654,7 @@ int main(void)
 				}
 				
 
-			
+
 				// Recieve data from QSPI mem and send over UART
 				// First part of data is from channel 0
 				// Second part of data is from channel 1
@@ -647,13 +667,14 @@ int main(void)
 					for (int i=0;i<256;i+=2){
 						amplitude0 = (int16_t)(((uint16_t) recMem0[i]) + (((uint16_t) recMem0[i+1])<<8));
 						printf ("%i\n",amplitude0);
-
 						// Update feature calculation
 						if(Fftt < FftT){
 							recBuffer[Fftn] = amplitude0;
 							if(Fftn == FftN){
+								printf("fftloop");
 								Fftn = 0;
 								featureUpdate(recBuffer);
+								printf("fftloopfinish");
 								Fftt += 1;
 							}else{
 								Fftn += 1;
@@ -676,6 +697,7 @@ int main(void)
 							recBuffer[Fftn] = amplitude0;
 							if(Fftn == FftN){
 								Fftn = 0;
+								printf("feature update");
 								featureUpdate(recBuffer);
 								Fftt += 1;
 							}else{
