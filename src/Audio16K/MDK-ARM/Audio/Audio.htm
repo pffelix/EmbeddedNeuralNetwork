@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Audio\Audio.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Audio\Audio.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri May 15 18:27:26 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sun May 17 09:03:31 2020
 <BR><P>
 <H3>Maximum Stack Usage =        352 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -128,7 +128,7 @@ Global Symbols
 <P><STRONG><a name="[5c]"></a>__main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry.o(.ARM.Collect$$$$00000000))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32l475xx.o(.text)
 </UL>
-<P><STRONG><a name="[e6]"></a>_main_stk</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry2.o(.ARM.Collect$$$$00000001))
+<P><STRONG><a name="[e4]"></a>_main_stk</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry2.o(.ARM.Collect$$$$00000001))
 
 <P><STRONG><a name="[62]"></a>_main_scatterload</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry5.o(.ARM.Collect$$$$00000004))
 <BR><BR>[Calls]<UL><LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
@@ -138,15 +138,15 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
 </UL>
 
-<P><STRONG><a name="[e7]"></a>_main_clock</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry7b.o(.ARM.Collect$$$$00000008))
+<P><STRONG><a name="[e5]"></a>_main_clock</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry7b.o(.ARM.Collect$$$$00000008))
 
-<P><STRONG><a name="[e8]"></a>_main_cpp_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry8b.o(.ARM.Collect$$$$0000000A))
+<P><STRONG><a name="[e6]"></a>_main_cpp_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry8b.o(.ARM.Collect$$$$0000000A))
 
-<P><STRONG><a name="[e9]"></a>_main_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry9a.o(.ARM.Collect$$$$0000000B))
+<P><STRONG><a name="[e7]"></a>_main_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry9a.o(.ARM.Collect$$$$0000000B))
 
-<P><STRONG><a name="[ea]"></a>__rt_final_cpp</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry10a.o(.ARM.Collect$$$$0000000D))
+<P><STRONG><a name="[e8]"></a>__rt_final_cpp</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry10a.o(.ARM.Collect$$$$0000000D))
 
-<P><STRONG><a name="[eb]"></a>__rt_final_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry11a.o(.ARM.Collect$$$$0000000F))
+<P><STRONG><a name="[e9]"></a>__rt_final_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry11a.o(.ARM.Collect$$$$0000000F))
 
 <P><STRONG><a name="[0]"></a>Reset_Handler</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, startup_stm32l475xx.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32l475xx.o(RESET)
@@ -391,9 +391,9 @@ Global Symbols
 <LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
 
-<P><STRONG><a name="[ec]"></a>__aeabi_memset4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
+<P><STRONG><a name="[ea]"></a>__aeabi_memset4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
 
-<P><STRONG><a name="[ed]"></a>__aeabi_memset8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
+<P><STRONG><a name="[eb]"></a>__aeabi_memset8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
 
 <P><STRONG><a name="[67]"></a>__aeabi_memclr</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
@@ -408,7 +408,7 @@ Global Symbols
 <LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
 </UL>
 
-<P><STRONG><a name="[ee]"></a>__aeabi_memclr8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
+<P><STRONG><a name="[ec]"></a>__aeabi_memclr8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
 
 <P><STRONG><a name="[69]"></a>_memset$wrapper</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, memseta.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
@@ -419,11 +419,11 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureInit
+<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureInit
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ar_declare
 </UL>
 
-<P><STRONG><a name="[ef]"></a>__aeabi_uidiv</STRONG> (Thumb, 0 bytes, Stack size 12 bytes, uidiv.o(.text), UNUSED)
+<P><STRONG><a name="[ed]"></a>__aeabi_uidiv</STRONG> (Thumb, 0 bytes, Stack size 12 bytes, uidiv.o(.text), UNUSED)
 
 <P><STRONG><a name="[da]"></a>__aeabi_uidivmod</STRONG> (Thumb, 44 bytes, Stack size 12 bytes, uidiv.o(.text), UNUSED)
 <BR><BR>[Called By]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
@@ -433,13 +433,13 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
 </UL>
 
-<P><STRONG><a name="[f0]"></a>_ll_shift_l</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llshl.o(.text), UNUSED)
+<P><STRONG><a name="[ee]"></a>_ll_shift_l</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llshl.o(.text), UNUSED)
 
 <P><STRONG><a name="[65]"></a>__aeabi_llsr</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, llushr.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
 </UL>
 
-<P><STRONG><a name="[f1]"></a>_ll_ushift_r</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llushr.o(.text), UNUSED)
+<P><STRONG><a name="[ef]"></a>_ll_ushift_r</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llushr.o(.text), UNUSED)
 
 <P><STRONG><a name="[63]"></a>__scatterload</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, init.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main_after_scatterload
@@ -447,7 +447,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_main_scatterload
 </UL>
 
-<P><STRONG><a name="[f2]"></a>__scatterload_rt2</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, init.o(.text), UNUSED)
+<P><STRONG><a name="[f0]"></a>__scatterload_rt2</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, init.o(.text), UNUSED)
 
 <P><STRONG><a name="[70]"></a>arm_bitreversal_q15</STRONG> (Thumb, 114 bytes, Stack size 28 bytes, arm_bitreversal.o(.text.arm_bitreversal_q15))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = arm_bitreversal_q15
@@ -455,8 +455,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_cfft_radix2_q15
 </UL>
 
-<P><STRONG><a name="[e2]"></a>arm_cfft_radix2_init_q15</STRONG> (Thumb, 152 bytes, Stack size 0 bytes, arm_cfft_radix2_init_q15.o(.text.arm_cfft_radix2_init_q15))
-<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureInit
+<P><STRONG><a name="[e0]"></a>arm_cfft_radix2_init_q15</STRONG> (Thumb, 152 bytes, Stack size 0 bytes, arm_cfft_radix2_init_q15.o(.text.arm_cfft_radix2_init_q15))
+<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureInit
 </UL>
 
 <P><STRONG><a name="[6d]"></a>arm_cfft_radix2_q15</STRONG> (Thumb, 48 bytes, Stack size 16 bytes, arm_cfft_radix2_q15.o(.text.arm_cfft_radix2_q15))
@@ -466,7 +466,7 @@ Global Symbols
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_radix2_butterfly_inverse_q15
 <LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_bitreversal_q15
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureUpdate
+<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureUpdate
 </UL>
 
 <P><STRONG><a name="[6e]"></a>arm_radix2_butterfly_inverse_q15</STRONG> (Thumb, 448 bytes, Stack size 68 bytes, arm_cfft_radix2_q15.o(.text.arm_radix2_butterfly_inverse_q15))
@@ -481,10 +481,10 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_cfft_radix2_q15
 </UL>
 
-<P><STRONG><a name="[e4]"></a>arm_sqrt_q15</STRONG> (Thumb, 220 bytes, Stack size 16 bytes, arm_sqrt_q15.o(.text.arm_sqrt_q15))
+<P><STRONG><a name="[e2]"></a>arm_sqrt_q15</STRONG> (Thumb, 220 bytes, Stack size 16 bytes, arm_sqrt_q15.o(.text.arm_sqrt_q15))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = arm_sqrt_q15
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureUpdate
+<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureUpdate
 </UL>
 
 <P><STRONG><a name="[4]"></a>BusFault_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32l4xx_it.o(i.BusFault_Handler))
@@ -791,7 +791,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Init
 </UL>
 
-<P><STRONG><a name="[e5]"></a>HAL_NVIC_DisableIRQ</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, stm32l4xx_hal_cortex.o(i.HAL_NVIC_DisableIRQ))
+<P><STRONG><a name="[e3]"></a>HAL_NVIC_DisableIRQ</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, stm32l4xx_hal_cortex.o(i.HAL_NVIC_DisableIRQ))
 <BR><BR>[Called By]<UL><LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
@@ -1171,10 +1171,10 @@ Global Symbols
 <P><STRONG><a name="[c0]"></a>UART_SetConfig</STRONG> (Thumb, 612 bytes, Stack size 24 bytes, stm32l4xx_hal_uart.o(i.UART_SetConfig))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = UART_SetConfig &rArr; __aeabi_uldivmod
 </UL>
-<BR>[Calls]<UL><LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
-<LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_GetSysClockFreq
+<BR>[Calls]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_GetSysClockFreq
 <LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_GetPCLK2Freq
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_GetPCLK1Freq
+<LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
 </UL>
 <BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Init
 </UL>
@@ -1199,14 +1199,14 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
 </UL>
 
-<P><STRONG><a name="[f3]"></a>__1printf$1</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printf1.o(i.__0printf$1), UNUSED)
+<P><STRONG><a name="[f1]"></a>__1printf$1</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printf1.o(i.__0printf$1), UNUSED)
 
 <P><STRONG><a name="[78]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, printf1.o(i.__0printf$1))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = __2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureUpdate
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureClean
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureUpdate
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureClean
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Error_Handler
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_WriteEnable
@@ -1221,68 +1221,50 @@ Global Symbols
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_DFSDM1_Init
 </UL>
 
-<P><STRONG><a name="[f4]"></a>__scatterload_copy</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_copy), UNUSED)
+<P><STRONG><a name="[f2]"></a>__scatterload_copy</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_copy), UNUSED)
 
-<P><STRONG><a name="[f5]"></a>__scatterload_null</STRONG> (Thumb, 2 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_null), UNUSED)
+<P><STRONG><a name="[f3]"></a>__scatterload_null</STRONG> (Thumb, 2 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_null), UNUSED)
 
-<P><STRONG><a name="[f6]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
+<P><STRONG><a name="[f4]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
 
 <P><STRONG><a name="[db]"></a>ar_declare</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, main.o(i.ar_declare))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = ar_declare &rArr; calloc &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;calloc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureInit
+<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureInit
 </UL>
 
-<P><STRONG><a name="[dc]"></a>ar_declare3d</STRONG> (Thumb, 86 bytes, Stack size 32 bytes, main.o(i.ar_declare3d))
-<BR><BR>[Stack]<UL><LI>Max Depth = 52<LI>Call Chain = ar_declare3d &rArr; malloc
-</UL>
-<BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
-</UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureInit
-</UL>
-
-<P><STRONG><a name="[dd]"></a>ar_free3d</STRONG> (Thumb, 54 bytes, Stack size 24 bytes, main.o(i.ar_free3d))
-<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = ar_free3d &rArr; free
-</UL>
-<BR>[Calls]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
-</UL>
-<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureFinish
-</UL>
-
-<P><STRONG><a name="[df]"></a>featureClean</STRONG> (Thumb, 146 bytes, Stack size 32 bytes, main.o(i.featureClean))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = featureClean &rArr; __2printf
+<P><STRONG><a name="[dc]"></a>featureClean</STRONG> (Thumb, 138 bytes, Stack size 40 bytes, main.o(i.featureClean))
+<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = featureClean &rArr; __2printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[e0]"></a>featureFinish</STRONG> (Thumb, 34 bytes, Stack size 8 bytes, main.o(i.featureFinish))
-<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = featureFinish &rArr; ar_free3d &rArr; free
+<P><STRONG><a name="[dd]"></a>featureFinish</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, main.o(i.featureFinish))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = featureFinish &rArr; free
 </UL>
-<BR>[Calls]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ar_free3d
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<BR>[Calls]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[e1]"></a>featureInit</STRONG> (Thumb, 66 bytes, Stack size 16 bytes, main.o(i.featureInit))
-<BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = featureInit &rArr; ar_declare3d &rArr; malloc
+<P><STRONG><a name="[df]"></a>featureInit</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, main.o(i.featureInit))
+<BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = featureInit &rArr; ar_declare &rArr; calloc &rArr; malloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_cfft_radix2_init_q15
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ar_declare3d
+<BR>[Calls]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_cfft_radix2_init_q15
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ar_declare
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;calloc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[e3]"></a>featureUpdate</STRONG> (Thumb, 178 bytes, Stack size 24 bytes, main.o(i.featureUpdate))
+<P><STRONG><a name="[e1]"></a>featureUpdate</STRONG> (Thumb, 182 bytes, Stack size 24 bytes, main.o(i.featureUpdate))
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = featureUpdate &rArr; arm_cfft_radix2_q15 &rArr; arm_radix2_butterfly_q15
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_sqrt_q15
+<BR>[Calls]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_sqrt_q15
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_cfft_radix2_q15
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
@@ -1299,27 +1281,26 @@ Global Symbols
 <P><STRONG><a name="[de]"></a>free</STRONG> (Thumb, 76 bytes, Stack size 8 bytes, malloc.o(i.free))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = free
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureFinish
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ar_free3d
+<BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureFinish
 </UL>
 
-<P><STRONG><a name="[5a]"></a>main</STRONG> (Thumb, 1918 bytes, Stack size 40 bytes, main.o(i.main))
+<P><STRONG><a name="[5a]"></a>main</STRONG> (Thumb, 1934 bytes, Stack size 40 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 352<LI>Call Chain = main &rArr; SystemClock_Config &rArr; HAL_RCC_OscConfig &rArr; HAL_InitTick &rArr; HAL_NVIC_SetPriority
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_QSPI_Init
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_QSPI_Command
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_EnableIRQ
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_DisableIRQ
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_DisableIRQ
 <LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Init
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_DMA_Start
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_DMA_PollForTransfer
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_DFSDM_FilterRegularStop_DMA
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_DFSDM_FilterRegularStart_DMA
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureUpdate
-<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureInit
-<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureFinish
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureClean
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureUpdate
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureInit
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureFinish
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureClean
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_WriteEnable
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QSPI_Send
@@ -1338,8 +1319,7 @@ Global Symbols
 <P><STRONG><a name="[6b]"></a>malloc</STRONG> (Thumb, 92 bytes, Stack size 20 bytes, malloc.o(i.malloc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = malloc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ar_declare3d
-<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;calloc
+<BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;calloc
 </UL>
 <P>
 <H3>

@@ -128,7 +128,6 @@ uint8_t recMem1[256],recMem0[256];
 int16_t sendMem1[128],sendMem0[128];
 int32_t recBuff1[QUEUELENGTH],recBuff0[QUEUELENGTH];
 int16_t amplitude0,amplitude1;
-int32_t amplitude0_32b,amplitude1_32b;
 
 uint8_t state=0;
 
@@ -140,8 +139,8 @@ uint32_t numFull=0,numDetected=0;
 #define CEILING(x,y) (((x) + (y) - 1) / (y))
 #define RecSeconds 3
 #define RecN RecSeconds * SampleRate
-#define FftN 512
-#define FfthalfN FftN / 2 + 1
+#define FftN 128
+#define FfthalfN ((FftN / 2) + 1)
 #define FftT CEILING(RecN, FftN)
 #define FeatureN RecN
 #define MicN 2
@@ -150,11 +149,12 @@ uint32_t numFull=0,numDetected=0;
 // declare
 q15_t* recBuffer;
 q15_t* fftBuffer;
-q15_t*** featureBuffer;
+//q15_t*** featureBuffer;
 arm_cfft_radix2_instance_q15* fft_struct;
 uint16_t Fftt;
 uint16_t Fftn;
 uint16_t Micn;
+q15_t featureBuffer[128][65][MicN];
 
 
 /* Program ---------------------------------------------------------*/
@@ -319,7 +319,7 @@ void featureInit(void){
 		// init buffers
 		recBuffer = ar_declare(FftN);
 		fftBuffer = ar_declare(FftN * 2);
-		featureBuffer = ar_declare3d(FftT, FfthalfN, MicN);
+		//featureBuffer = ar_declare3d(FftT, FfthalfN, MicN);
 		Fftt = 0;
 		Fftn = 0;
 }
@@ -407,7 +407,7 @@ void featureFinish(void){
 		// free memory
 		free(fft_struct);
 		free(fftBuffer);
-		ar_free3d(featureBuffer, FftT, FfthalfN, MicN);	
+		//ar_free3d(&featureBuffer[0][0][0], FftT, FfthalfN, MicN);	
 }
 
 

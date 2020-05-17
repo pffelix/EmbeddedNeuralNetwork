@@ -25,7 +25,7 @@
 "audio\stm32l4xx_hal_tim_ex.o"
 "audio\stm32l4xx_hal_uart.o"
 "audio\stm32l4xx_hal_uart_ex.o"
-"C:\Users\Felix\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\DSP\Lib\ARM\arm_cortexM4lf_math.lib"
+"C:\Users\davam\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\DSP\Lib\ARM\arm_cortexM4lf_math.lib"
 --library_type=microlib --strict --scatter "Audio\Audio.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
