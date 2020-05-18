@@ -140,11 +140,7 @@ uint32_t numFull=0,numDetected=0;
 #define RecSeconds 3
 #define RecN RecSeconds * SampleRate
 #define FftN 128
-<<<<<<< HEAD
-#define FfthalfN FftN / 2 + 1
-=======
 #define FfthalfN ((FftN / 2) + 1)
->>>>>>> e6b9632864e9d61031888a2163042ba124cf93f8
 #define FftT CEILING(RecN, FftN)
 #define FeatureN RecN
 #define MicN 2
