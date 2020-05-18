@@ -1,3 +1,4 @@
 *.asv
 src/Audio16K/MDK-ARM/Audio/
 src/Firmware/MDK-ARM/Firmware/
+src/Firmware/MDK-ARM/Firmware.uvguix.Felix
