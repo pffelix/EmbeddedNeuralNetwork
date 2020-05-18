@@ -1275,9 +1275,9 @@ void featureUpdate(float32_t* inputBuffer){
 			imag = fftBuffer[2 * i + 1];
 			arm_sqrt_f32(real * real + imag * imag, &inputBuffer[i]);
 
-			if(inputBuffer[i] > mag_max0 && Micn == 0){
+			if(fabsf(inputBuffer[i]) > mag_max0 && Micn == 0){
 				mag_max0 = inputBuffer[i];
-			} else if (inputBuffer[i] > mag_max1 && Micn == 1){
+			} else if (fabsf(inputBuffer[i]) > mag_max1 && Micn == 1){
 				mag_max1 = inputBuffer[i];
 			}
 		}
