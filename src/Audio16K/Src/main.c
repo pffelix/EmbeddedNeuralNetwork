@@ -140,7 +140,7 @@ uint32_t numFull=0,numDetected=0;
 #define CEILING(x,y) (((x) + (y) - 1) / (y))
 #define RecSeconds 3
 #define RecN RecSeconds * SampleRate
-#define FftN 512
+#define FftN 128
 #define FfthalfN FftN / 2 + 1
 #define FftT CEILING(RecN, FftN)
 #define FeatureN RecN

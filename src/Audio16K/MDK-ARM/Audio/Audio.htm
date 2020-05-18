@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Audio\Audio.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Audio\Audio.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri May 15 18:27:26 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sat May 16 09:49:16 2020
 <BR><P>
 <H3>Maximum Stack Usage =        352 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1171,10 +1171,10 @@ Global Symbols
 <P><STRONG><a name="[c0]"></a>UART_SetConfig</STRONG> (Thumb, 612 bytes, Stack size 24 bytes, stm32l4xx_hal_uart.o(i.UART_SetConfig))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = UART_SetConfig &rArr; __aeabi_uldivmod
 </UL>
-<BR>[Calls]<UL><LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
-<LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_GetSysClockFreq
+<BR>[Calls]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_GetSysClockFreq
 <LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_GetPCLK2Freq
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_GetPCLK1Freq
+<LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
 </UL>
 <BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Init
 </UL>
@@ -1251,7 +1251,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;featureFinish
 </UL>
 
-<P><STRONG><a name="[df]"></a>featureClean</STRONG> (Thumb, 146 bytes, Stack size 32 bytes, main.o(i.featureClean))
+<P><STRONG><a name="[df]"></a>featureClean</STRONG> (Thumb, 138 bytes, Stack size 32 bytes, main.o(i.featureClean))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = featureClean &rArr; __2printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
@@ -1268,8 +1268,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[e1]"></a>featureInit</STRONG> (Thumb, 66 bytes, Stack size 16 bytes, main.o(i.featureInit))
-<BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = featureInit &rArr; ar_declare3d &rArr; malloc
+<P><STRONG><a name="[e1]"></a>featureInit</STRONG> (Thumb, 64 bytes, Stack size 8 bytes, main.o(i.featureInit))
+<BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = featureInit &rArr; ar_declare3d &rArr; malloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_cfft_radix2_init_q15
 <LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ar_declare3d
@@ -1279,8 +1279,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[e3]"></a>featureUpdate</STRONG> (Thumb, 178 bytes, Stack size 24 bytes, main.o(i.featureUpdate))
-<BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = featureUpdate &rArr; arm_cfft_radix2_q15 &rArr; arm_radix2_butterfly_q15
+<P><STRONG><a name="[e3]"></a>featureUpdate</STRONG> (Thumb, 172 bytes, Stack size 16 bytes, main.o(i.featureUpdate))
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = featureUpdate &rArr; arm_cfft_radix2_q15 &rArr; arm_radix2_butterfly_q15
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_sqrt_q15
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_cfft_radix2_q15
@@ -1303,7 +1303,7 @@ Global Symbols
 <LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ar_free3d
 </UL>
 
-<P><STRONG><a name="[5a]"></a>main</STRONG> (Thumb, 1918 bytes, Stack size 40 bytes, main.o(i.main))
+<P><STRONG><a name="[5a]"></a>main</STRONG> (Thumb, 1934 bytes, Stack size 40 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 352<LI>Call Chain = main &rArr; SystemClock_Config &rArr; HAL_RCC_OscConfig &rArr; HAL_InitTick &rArr; HAL_NVIC_SetPriority
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_QSPI_Init
