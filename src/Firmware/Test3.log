@@ -1,0 +1,25 @@
+Idle
+Hello
+Initilize memory Done
+init feature calculation
+Idle
+Idle
+Idle
+Idle
+Idle
+Idle
+started recording
+Stopped Recording and Send Data Over
+Number of buffer full: 253
+Number of detected full: 253
+Finished Sending Data, Erasing memory
+Extracted Size: 96 * 65 * 2
+Prediction:
+out[0]: 0.000121 
+out[1]: 0.000000 
+out[2]: 0.000000 
+out[3]: 0.000002 
+out[4]: 0.000137 
+out[5]: 0.000000 
+out[6]: 0.000031 
+out[7]: 0.999709 
