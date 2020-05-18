@@ -132,7 +132,7 @@ uint16_t Fftt;
 uint16_t Fftn;
 uint8_t Micn;
 
-float32_t mag_max0,mag_max1;
+float32_t mag_max0,mag_max1,mag_max;
 
 // Feature output == NN input data
 float32_t featureBuffer[FftT][FftNSave][MicN];
@@ -506,7 +506,7 @@ int main(void)
 						//printf ("%i\n",amplitude0);
 						// Update feature calculation
 						if(Fftt < FftT){
-							recBuffer[Fftn] = ((float32_t)amplitude0)/32767;
+							recBuffer[Fftn] = ((float32_t)amplitude0)/32768.0f;
 							if(Fftn == FftN){
 								Fftn = 0;
 								featureUpdate(recBuffer);
@@ -528,7 +528,7 @@ int main(void)
 						//printf ("%i\n",amplitude1);
 						// Update feature calculation
 						if(Fftt < FftT){
-							recBuffer[Fftn] = ((float32_t)amplitude1)/32767;
+							recBuffer[Fftn] = ((float32_t)amplitude1)/32768.0f;
 							if(Fftn == FftN){
 								Fftn = 0;
 								featureUpdate(recBuffer);
@@ -546,12 +546,14 @@ int main(void)
 				
 				printf ("Extracted Size: %d * %d * %d\n",Fftt,FftNSave,MicN);
 				
-				mag_max0 = mag_max0/32767;
-				mag_max1 = mag_max1/32767;
+				// normalize
+				mag_max0 = mag_max0/32768.0f;
+				mag_max1 = mag_max1/32768.0f;
+				mag_max = mag_max1 > mag_max0 ? mag_max1 : mag_max0;
 				for (int i=0;i<FftT;i++){
 					for (int j=0;j<FftNSave;j++){
-							featureBuffer[i][j][0] = (int16_t)(featureBuffer[i][j][0]/mag_max0);
-							featureBuffer[i][j][1] = (int16_t)(featureBuffer[i][j][1]/mag_max1);
+							featureBuffer[i][j][0] = (featureBuffer[i][j][0]/mag_max);
+							featureBuffer[i][j][1] = (featureBuffer[i][j][1]/mag_max);
 							printf ("%f\n",featureBuffer[i][j][0]);
 					}
 				}
