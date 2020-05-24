@@ -1,0 +1,3 @@
+nnom_flatten.c:24:15:Flatten	24	static
+nnom_flatten.c:57:15:flatten_build	32	static
+nnom_flatten.c:71:15:flatten_run	16	static

@@ -1,0 +1,437 @@
+
+
+Analyzing model 
+Neural Network Tools for STM32 v1.2.0 (AI tools v5.0.0) 
+-- Importing model 
+-- Importing model - done (elapsed time 0.999s) 
+-- Rendering model 
+-- Rendering model - done (elapsed time 0.060s) 
+ 
+Creating report file C:\Users\davam\STM32Cube\Repository\Packs\STMicroelectronics\X-CUBE-AI\5.0.0\Utilities\windows\stm32ai_output\network_analyze_report.txt 
+ 
+Exec/report summary (analyze dur=1.061s err=0) 
+------------------------------------------------------------------------------------------------------------------------ 
+model file         : D:\ETH\Courses\ML_on_uCU\Project\MyCodeVersion\FinalWithoutGRU1mic.h5 
+type               : keras (keras_dump) 
+c_name             : network 
+compression        : None 
+quantize           : None 
+L2r error          : NOT EVALUATED 
+workspace dir      : C:\Users\davam\AppData\Local\Temp\mxAI_workspace121902159332003301865768152190651 
+output dir         : C:\Users\davam\STM32Cube\Repository\Packs\STMicroelectronics\X-CUBE-AI\5.0.0\Utilities\windows\stm32ai_output 
+ 
+model_name         : FinalWithoutGRU1mic 
+model_hash         : 82434edcdae54969f46237503debf852 
+input              : input_0 [6,240 items, 24.38 KiB, ai_float, FLOAT32, (96, 65, 1)] 
+input (total)      : 24.38 KiB 
+output             : activation_4 [8 items, 32 B, ai_float, FLOAT32, (8,)] 
+output (total)     : 32 B 
+params #           : 26,568 items (103.78 KiB) 
+macc               : 1,142,032 
+weights (ro)       : 106,080 (103.59 KiB) (-0.18%)  
+activations (rw)   : 26,848 (26.22 KiB)  
+ram (total)        : 51,840 (50.62 KiB) = 26,848 + 24,960 + 32 
+ 
+------------------------------------------------------------------------------------------------------------------------ 
+id  layer (type)                      output shape      param #     connected to             macc           rom                 
+------------------------------------------------------------------------------------------------------------------------ 
+0   input_0 (Input)                   (96, 65, 1)                                                                               
+    conv2d_1 (Conv2D)                 (96, 65, 8)       80          input_0                  548,360        320                 
+------------------------------------------------------------------------------------------------------------------------ 
+1   batch_normalization_1 (ScaleBias) (96, 65, 8)       16          conv2d_1                                                    
+------------------------------------------------------------------------------------------------------------------------ 
+2   activation_1 (Nonlinearity)       (96, 65, 8)                   batch_normalization_1                                       
+------------------------------------------------------------------------------------------------------------------------ 
+3   max_pooling2d_1 (Pool)            (96, 8, 8)                    activation_1                                                
+------------------------------------------------------------------------------------------------------------------------ 
+5   conv2d_2 (Conv2D)                 (96, 8, 8)        584         max_pooling2d_1          454,664        2,336               
+------------------------------------------------------------------------------------------------------------------------ 
+6   batch_normalization_2 (ScaleBias) (96, 8, 8)        16          conv2d_2                                                    
+------------------------------------------------------------------------------------------------------------------------ 
+7   activation_2 (Nonlinearity)       (96, 8, 8)                    batch_normalization_2                                       
+------------------------------------------------------------------------------------------------------------------------ 
+8   max_pooling2d_2 (Pool)            (96, 2, 8)                    activation_2                                                
+------------------------------------------------------------------------------------------------------------------------ 
+10  conv2d_3 (Conv2D)                 (96, 2, 8)        584         max_pooling2d_2          113,672        2,336               
+------------------------------------------------------------------------------------------------------------------------ 
+11  batch_normalization_3 (ScaleBias) (96, 2, 8)        16          conv2d_3                                                    
+------------------------------------------------------------------------------------------------------------------------ 
+12  activation_3 (Nonlinearity)       (96, 2, 8)                    batch_normalization_3                                       
+------------------------------------------------------------------------------------------------------------------------ 
+13  max_pooling2d_3 (Pool)            (96, 1, 8)                    activation_3                                                
+------------------------------------------------------------------------------------------------------------------------ 
+15  flatten_1 (Reshape)               (768,)                        max_pooling2d_3                                             
+------------------------------------------------------------------------------------------------------------------------ 
+16  dense_1 (Dense)                   (32,)             24,608      flatten_1                24,576         98,432              
+------------------------------------------------------------------------------------------------------------------------ 
+17  dense_2 (Dense)                   (16,)             528         dense_1                  512            2,112               
+------------------------------------------------------------------------------------------------------------------------ 
+18  dense_3 (Dense)                   (8,)              136         dense_2                  128            544                 
+------------------------------------------------------------------------------------------------------------------------ 
+19  activation_4 (Nonlinearity)       (8,)                          dense_3                  120                                
+------------------------------------------------------------------------------------------------------------------------ 
+FinalWithoutGRU1mic p=26568(103.78 KBytes) macc=1142032 rom=103.59 KBytes (-0.18%) ram=26.22 KiB io_ram=24.41 KiB 
+ 
+  
+Complexity per-layer - macc=1,142,032 rom=106,080 
+------------------------------------------------------------------------------------------------------------------------ 
+id      layer (type)                      macc                                    rom                                     
+------------------------------------------------------------------------------------------------------------------------ 
+0       conv2d_1 (Conv2D)                 |||||||||||||||||||||||||||||||  48.0%  |                                 0.3%  
+5       conv2d_2 (Conv2D)                 |||||||||||||||||||||||||        39.8%  |                                 2.2%  
+10      conv2d_3 (Conv2D)                 |||||||                          10.0%  |                                 2.2%  
+16      dense_1 (Dense)                   ||                                2.2%  |||||||||||||||||||||||||||||||  92.8%  
+17      dense_2 (Dense)                   |                                 0.0%  |                                 2.0%  
+18      dense_3 (Dense)                   |                                 0.0%  |                                 0.5%  
+19      activation_4 (Nonlinearity)       |                                 0.0%  |                                 0.0%  
+------------------------------------------------------------------------------------------------------------------------ 
+ 
+Using TensorFlow backend. 
+Analyze complete on AI model
+
+
+
+
+
+Starting AI validation on desktop with custom dataset : D:\ETH\Courses\ML_on_uCU\Project\MyCodeVersion\X_validateBig1mic.npy... 
+Neural Network Tools for STM32 v1.2.0 (AI tools v5.0.0) 
+-- Importing model 
+-- Importing model - done (elapsed time 1.011s) 
+-- Building X86 C-model 
+-- Building X86 C-model - done (elapsed time 1.874s) 
+-- Setting inputs (and outputs) data 
+Using user-provided input file(s), shapes=(5434, 96, 65, 1) 
+Using reference output file(s), shapes=(5434, 8) 
+-- Setting inputs (and outputs) data - done (elapsed time 0.167s) 
+-- Running X86 C-model 
+............. 
+-- Running X86 C-model - done (elapsed time 9.738s) 
+-- Running original model 
+...... 
+-- Running original model - done (elapsed time 6.712s) 
+ 
+Accuracy report #1 for the generated x86 C-model 
+---------------------------------------------------------------------------------------------------- 
+NOTE: Computed against the provided ground truth values 
+ 
+acc=94.81%, rmse=0.1000, mae=0.0210 
+ 
+8 classes (5434 samples) 
+------------------------------------------------ 
+C0        628   .    .    7    1    .   33    1   
+C1         .   670   8    .    .    1    2    1   
+C2         .   14   674   1    3    .    .    .   
+C3         .    .    1   679   6    .    4    .   
+C4         1    1    3   101  537   .    1    .   
+C5         1    1    .    .    1   639   2    3   
+C6        24    4    .   39    2    3   601   1   
+C7         .    1    .    1    1    2    6   724  
+ 
+Accuracy report #1 for the reference model 
+---------------------------------------------------------------------------------------------------- 
+NOTE: Computed against the provided ground truth values 
+ 
+acc=94.81%, rmse=0.1000, mae=0.0210 
+ 
+8 classes (5434 samples) 
+------------------------------------------------ 
+C0        628   .    .    7    1    .   33    1   
+C1         .   670   8    .    .    1    2    1   
+C2         .   14   674   1    3    .    .    .   
+C3         .    .    1   679   6    .    4    .   
+C4         1    1    3   101  537   .    1    .   
+C5         1    1    .    .    1   639   2    3   
+C6        24    4    .   39    2    3   601   1   
+C7         .    1    .    1    1    2    6   724  
+ 
+Cross accuracy report #1 (reference vs C-model) 
+---------------------------------------------------------------------------------------------------- 
+NOTE: the output of the reference model is used as ground truth value 
+ 
+acc=100.00%, rmse=0.0000, mae=0.0000 
+ 
+8 classes (5434 samples) 
+------------------------------------------------ 
+C0        654   .    .    .    .    .    .    .   
+C1         .   691   .    .    .    .    .    .   
+C2         .    .   686   .    .    .    .    .   
+C3         .    .    .   828   .    .    .    .   
+C4         .    .    .    .   551   .    .    .   
+C5         .    .    .    .    .   645   .    .   
+C6         .    .    .    .    .    .   649   .   
+C7         .    .    .    .    .    .    .   730  
+ 
+C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_m_inputs_1.csv has NOT been created 
+Note: per-SAMPLE DATA size limit exceeded: 6240 > 1024 
+C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_c_inputs_1.csv has NOT been created 
+Note: per-SAMPLE DATA size limit exceeded: 6240 > 1024 
+Creating C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_m_outputs_1.csv 
+Note: only the first 64 SAMPLES were saved 
+Creating C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_c_outputs_1.csv 
+Note: only the first 64 SAMPLES were saved 
+Creating C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_io.npz 
+ 
+Evaluation report (summary) 
+-------------------------------------------------- 
+Mode                   acc       rmse      mae       
+-------------------------------------------------- 
+x86 C-model #1         94.8%     0.099973  0.020994  
+original model #1      94.8%     0.099973  0.020994  
+X-cross #1             100.0%    0.000000  0.000000  
+ 
+L2r error : 7.63003015e-07 (expected to be < 0.01) 
+ 
+Creating report file C:\Users\davam\.stm32cubemx\stm32ai_output\network_validate_report.txt 
+  
+Complexity/l2r error per-layer - macc=1,142,032 rom=106,080 
+------------------------------------------------------------------------------------------------------------------------ 
+id  layer (type)                      macc                          rom                           l2r error                     
+------------------------------------------------------------------------------------------------------------------------ 
+0   conv2d_1 (Conv2D)                 |||||||||||||||||||||  48.0%  |                       0.3%                                
+5   conv2d_2 (Conv2D)                 |||||||||||||||||      39.8%  |                       2.2%                                
+10  conv2d_3 (Conv2D)                 |||||                  10.0%  |                       2.2%                                
+16  dense_1 (Dense)                   |                       2.2%  |||||||||||||||||||||  92.8%                                
+17  dense_2 (Dense)                   |                       0.0%  |                       2.0%                                
+18  dense_3 (Dense)                   |                       0.0%  |                       0.5%                                
+19  activation_4 (Nonlinearity)       |                       0.0%  |                       0.0%  7.63003015e-07 *              
+------------------------------------------------------------------------------------------------------------------------ 
+ 
+Using TensorFlow backend. 
+Validation ended
+
+
+
+
+Starting AI validation on target with custom dataset : D:\ETH\Courses\ML_on_uCU\Project\MyCodeVersion\X_validate1mic.npy... 
+Neural Network Tools for STM32 v1.2.0 (AI tools v5.0.0) 
+-- Importing model 
+-- Importing model - done (elapsed time 1.007s) 
+-- Building X86 C-model 
+-- Building X86 C-model - done (elapsed time 1.751s) 
+-- Setting inputs (and outputs) data 
+Using user-provided input file(s), shapes=(100, 96, 65, 1) 
+Using reference output file(s), shapes=(100, 8) 
+-- Setting inputs (and outputs) data - done (elapsed time 0.017s) 
+-- Running STM32 C-model 
+ 
+ON-DEVICE STM32 execution ("network", None, 115200).. 
+ 
+<Stm32com id=0x192fba6b390 - CONNECTED(COM6/115200) devid=0x415/STM32L4x6xx msg=2.1> 
+ 0x415/STM32L4x6xx @80MHz/80MHz (FPU is present) lat=4 ART: ICen DCen 
+ found network(s): ['network'] 
+ description    : 'network' 1->[7]->1 macc=1142032 rom=103.59KiB ram=26.22KiB 
+ tools versions : rt=(4, 1, 0) tool=(5, 0, 0)/(1, 3, 0) api=(1, 1, 0) "Sat May 23 21:08:32 2020" 
+ 
+Running with inputs (100, 96, 65, 1).. 
+....... 1/100 
+....... 2/100 
+....... 3/100 
+....... 4/100 
+....... 5/100 
+....... 6/100 
+....... 7/100 
+....... 8/100 
+....... 9/100 
+....... 10/100 
+....... 11/100 
+....... 12/100 
+....... 13/100 
+....... 14/100 
+....... 15/100 
+....... 16/100 
+....... 17/100 
+....... 18/100 
+....... 19/100 
+....... 20/100 
+....... 21/100 
+....... 22/100 
+....... 23/100 
+....... 24/100 
+....... 25/100 
+....... 26/100 
+....... 27/100 
+....... 28/100 
+....... 29/100 
+....... 30/100 
+....... 31/100 
+....... 32/100 
+....... 33/100 
+....... 34/100 
+....... 35/100 
+....... 36/100 
+....... 37/100 
+....... 38/100 
+....... 39/100 
+....... 40/100 
+....... 41/100 
+....... 42/100 
+....... 43/100 
+....... 44/100 
+....... 45/100 
+....... 46/100 
+....... 47/100 
+....... 48/100 
+....... 49/100 
+....... 50/100 
+....... 51/100 
+....... 52/100 
+....... 53/100 
+....... 54/100 
+....... 55/100 
+....... 56/100 
+....... 57/100 
+....... 58/100 
+....... 59/100 
+....... 60/100 
+....... 61/100 
+....... 62/100 
+....... 63/100 
+....... 64/100 
+....... 65/100 
+....... 66/100 
+....... 67/100 
+....... 68/100 
+....... 69/100 
+....... 70/100 
+....... 71/100 
+....... 72/100 
+....... 73/100 
+....... 74/100 
+....... 75/100 
+....... 76/100 
+....... 77/100 
+....... 78/100 
+....... 79/100 
+....... 80/100 
+....... 81/100 
+....... 82/100 
+....... 83/100 
+....... 84/100 
+....... 85/100 
+....... 86/100 
+....... 87/100 
+....... 88/100 
+....... 89/100 
+....... 90/100 
+....... 91/100 
+....... 92/100 
+....... 93/100 
+....... 94/100 
+....... 95/100 
+....... 96/100 
+....... 97/100 
+....... 98/100 
+....... 99/100 
+....... 100/100 
+ RUN Stats    : batches=100 dur=345.484s tfx=340.084s 7.177KiB/s (wb=2437.500KiB,rb=3.125KiB) 
+ 
+Results for 100 inference(s) @80/80MHz (macc:1142032) 
+ device      : 0x415/STM32L4x6xx @80MHz/80MHz (FPU is present) lat=4 ART: ICen DCen 
+ duration    : 226.730 ms (average) 
+ CPU cycles  : 18138394 (average) 
+ cycles/MACC : 15.88 (average for all layers) 
+ c_nodes     : 7 
+ 
+Clayer  id  desc                          oshape          fmt       ms         
+-------------------------------------------------------------------------------- 
+0       0   10011/(Merged Conv2d / Pool)  (96, 8, 8)      float32   150.687    
+1       5   10011/(Merged Conv2d / Pool)  (96, 2, 8)      float32   60.225     
+2       10  10011/(Merged Conv2d / Pool)  (96, 1, 8)      float32   12.583     
+3       16  10005/(Dense)                 (1, 1, 32)      float32   3.096      
+4       17  10005/(Dense)                 (1, 1, 16)      float32   0.082      
+5       18  10005/(Dense)                 (1, 1, 8)       float32   0.030      
+6       19  10009/(Nonlinearity)          (1, 1, 8)       float32   0.027      
+                                                                    226.730 (total) 
+ 
+-- Running STM32 C-model - done (elapsed time 345.978s) 
+-- Running original model 
+-- Running original model - done (elapsed time 0.755s) 
+ 
+Accuracy report #1 for the generated stm32 C-model 
+---------------------------------------------------------------------------------------------------- 
+NOTE: Computed against the provided ground truth values 
+ 
+acc=93.00%, rmse=0.1205, mae=0.0253 
+ 
+8 classes (100 samples) 
+------------------------------------------------ 
+C0        11    .    .    .    .    .    1    .   
+C1         .   14    .    .    .    .    .    .   
+C2         .    2   10    .    .    .    .    .   
+C3         .    .    .   16    .    .    .    .   
+C4         .    .    .    3    9    .    .    .   
+C5         .    .    .    .    .    7    .    .   
+C6         .    .    .    .    .    .   11    .   
+C7         .    .    .    .    .    1    .   15   
+ 
+Accuracy report #1 for the reference model 
+---------------------------------------------------------------------------------------------------- 
+NOTE: Computed against the provided ground truth values 
+ 
+acc=93.00%, rmse=0.1205, mae=0.0253 
+ 
+8 classes (100 samples) 
+------------------------------------------------ 
+C0        11    .    .    .    .    .    1    .   
+C1         .   14    .    .    .    .    .    .   
+C2         .    2   10    .    .    .    .    .   
+C3         .    .    .   16    .    .    .    .   
+C4         .    .    .    3    9    .    .    .   
+C5         .    .    .    .    .    7    .    .   
+C6         .    .    .    .    .    .   11    .   
+C7         .    .    .    .    .    1    .   15   
+ 
+Cross accuracy report #1 (reference vs C-model) 
+---------------------------------------------------------------------------------------------------- 
+NOTE: the output of the reference model is used as ground truth value 
+ 
+acc=100.00%, rmse=0.0000, mae=0.0000 
+ 
+8 classes (100 samples) 
+------------------------------------------------ 
+C0        11    .    .    .    .    .    .    .   
+C1         .   16    .    .    .    .    .    .   
+C2         .    .   10    .    .    .    .    .   
+C3         .    .    .   19    .    .    .    .   
+C4         .    .    .    .    9    .    .    .   
+C5         .    .    .    .    .    8    .    .   
+C6         .    .    .    .    .    .   12    .   
+C7         .    .    .    .    .    .    .   15   
+ 
+C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_m_inputs_1.csv has NOT been created 
+Note: per-SAMPLE DATA size limit exceeded: 6240 > 1024 
+C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_c_inputs_1.csv has NOT been created 
+Note: per-SAMPLE DATA size limit exceeded: 6240 > 1024 
+Creating C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_m_outputs_1.csv 
+Note: only the first 64 SAMPLES were saved 
+Creating C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_c_outputs_1.csv 
+Note: only the first 64 SAMPLES were saved 
+Creating C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_io.npz 
+ 
+Evaluation report (summary) 
+-------------------------------------------------- 
+Mode                   acc       rmse      mae       
+-------------------------------------------------- 
+stm32 C-model #1       93.0%     0.120474  0.025313  
+original model #1      93.0%     0.120474  0.025313  
+X-cross #1             100.0%    0.000000  0.000000  
+ 
+L2r error : 7.22246909e-07 (expected to be < 0.01) 
+ 
+Creating report file C:\Users\davam\.stm32cubemx\stm32ai_output\network_validate_report.txt 
+  
+Complexity/l2r error per-layer - macc=1,142,032 rom=106,080 
+------------------------------------------------------------------------------------------------------------------------ 
+id  layer (type)                      macc                          rom                           l2r error                     
+------------------------------------------------------------------------------------------------------------------------ 
+0   conv2d_1 (Conv2D)                 |||||||||||||||||||||  48.0%  |                       0.3%                                
+5   conv2d_2 (Conv2D)                 |||||||||||||||||      39.8%  |                       2.2%                                
+10  conv2d_3 (Conv2D)                 |||||                  10.0%  |                       2.2%                                
+16  dense_1 (Dense)                   |                       2.2%  |||||||||||||||||||||  92.8%                                
+17  dense_2 (Dense)                   |                       0.0%  |                       2.0%                                
+18  dense_3 (Dense)                   |                       0.0%  |                       0.5%                                
+19  activation_4 (Nonlinearity)       |                       0.0%  |                       0.0%  7.22246909e-07 *              
+------------------------------------------------------------------------------------------------------------------------ 
+ 
+Using TensorFlow backend. 
+Validation ended

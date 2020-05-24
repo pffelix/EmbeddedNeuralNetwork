@@ -1,0 +1,3 @@
+nnom_sumpool.c:24:15:SumPool	48	static
+nnom_sumpool.c:38:15:sumpooling_build	32	static
+nnom_sumpool.c:51:15:sumpool_run	96	static

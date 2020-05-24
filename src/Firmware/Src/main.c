@@ -132,7 +132,7 @@ uint16_t Fftt;
 uint16_t Fftn;
 uint8_t Micn;
 
-float32_t mag_max0,mag_max1,mag_max;
+float32_t mag_max0,mag_max1;
 
 // Feature output == NN input data
 float32_t featureBuffer[FftT][FftNSave][MicN];
@@ -506,7 +506,7 @@ int main(void)
 						//printf ("%i\n",amplitude0);
 						// Update feature calculation
 						if(Fftt < FftT){
-							recBuffer[Fftn] = ((float32_t)amplitude0)/32768.0f;
+							recBuffer[Fftn] = ((float32_t)amplitude0)/32767;
 							if(Fftn == FftN){
 								Fftn = 0;
 								featureUpdate(recBuffer);
@@ -528,7 +528,7 @@ int main(void)
 						//printf ("%i\n",amplitude1);
 						// Update feature calculation
 						if(Fftt < FftT){
-							recBuffer[Fftn] = ((float32_t)amplitude1)/32768.0f;
+							recBuffer[Fftn] = ((float32_t)amplitude1)/32767;
 							if(Fftn == FftN){
 								Fftn = 0;
 								featureUpdate(recBuffer);
@@ -546,14 +546,12 @@ int main(void)
 				
 				printf ("Extracted Size: %d * %d * %d\n",Fftt,FftNSave,MicN);
 				
-				// normalize
-				mag_max0 = mag_max0/32768.0f;
-				mag_max1 = mag_max1/32768.0f;
-				mag_max = mag_max1 > mag_max0 ? mag_max1 : mag_max0;
+				mag_max0 = mag_max0/32767;
+				mag_max1 = mag_max1/32767;
 				for (int i=0;i<FftT;i++){
 					for (int j=0;j<FftNSave;j++){
-							featureBuffer[i][j][0] = (featureBuffer[i][j][0]/mag_max);
-							featureBuffer[i][j][1] = (featureBuffer[i][j][1]/mag_max);
+							featureBuffer[i][j][0] = (int16_t)(featureBuffer[i][j][0]/mag_max0);
+							featureBuffer[i][j][1] = (int16_t)(featureBuffer[i][j][1]/mag_max1);
 							printf ("%f\n",featureBuffer[i][j][0]);
 					}
 				}
@@ -1275,9 +1273,9 @@ void featureUpdate(float32_t* inputBuffer){
 			imag = fftBuffer[2 * i + 1];
 			arm_sqrt_f32(real * real + imag * imag, &inputBuffer[i]);
 
-			if(fabsf(inputBuffer[i]) > mag_max0 && Micn == 0){
+			if(inputBuffer[i] > mag_max0 && Micn == 0){
 				mag_max0 = inputBuffer[i];
-			} else if (fabsf(inputBuffer[i]) > mag_max1 && Micn == 1){
+			} else if (inputBuffer[i] > mag_max1 && Micn == 1){
 				mag_max1 = inputBuffer[i];
 			}
 		}

@@ -1,0 +1,3 @@
+nnom_maxpool.c:29:15:MaxPool	56	static
+nnom_maxpool.c:80:15:maxpooling_build	32	static
+nnom_maxpool.c:109:15:maxpool_run	88	static

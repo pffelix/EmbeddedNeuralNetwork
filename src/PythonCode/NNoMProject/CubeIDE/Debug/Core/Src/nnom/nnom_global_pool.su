@@ -1,0 +1,4 @@
+nnom_global_pool.c:24:15:GlobalMaxPool	40	static
+nnom_global_pool.c:40:15:GlobalAvgPool	40	static
+nnom_global_pool.c:57:15:GlobalSumPool	40	static
+nnom_global_pool.c:74:15:global_pooling_build	56	static

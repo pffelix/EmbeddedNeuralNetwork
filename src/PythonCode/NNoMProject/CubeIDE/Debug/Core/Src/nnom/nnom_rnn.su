@@ -1,0 +1,6 @@
+nnom_rnn.c:27:18:SimpleCell	32	static
+nnom_rnn.c:47:15:RNN	40	static
+nnom_rnn.c:88:15:simplecell_build	16	static
+nnom_rnn.c:95:15:rnn_build	24	static
+nnom_rnn.c:126:15:cell_simple_rnn_run	16	static
+nnom_rnn.c:185:15:rnn_run	24	static

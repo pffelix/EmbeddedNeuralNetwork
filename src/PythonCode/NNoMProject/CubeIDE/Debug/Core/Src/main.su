@@ -1,0 +1,8 @@
+weights.h:110:22:nnom_model_create	200	static
+main.c:77:1:__io_putchar	16	static
+main.c:82:1:__io_getchar	16	static
+main.c:93:5:main	48	static,ignoring_inline_asm
+main.c:156:6:SystemClock_Config	232	static
+main.c:205:13:MX_USART1_Init	8	static
+main.c:239:13:MX_GPIO_Init	16	static
+main.c:255:6:Error_Handler	4	static

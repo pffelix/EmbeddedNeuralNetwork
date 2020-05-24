@@ -1,0 +1,3 @@
+nnom_concat.c:27:15:Concat	40	static
+nnom_concat.c:68:15:concat_build	48	static
+nnom_concat.c:146:15:concat_run	56	static

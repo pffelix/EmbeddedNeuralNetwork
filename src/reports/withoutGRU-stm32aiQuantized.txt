@@ -1,0 +1,333 @@
+
+
+Analyzing model 
+Neural Network Tools for STM32 v1.2.0 (AI tools v5.0.0) 
+-- Importing model 
+-- Importing model - done (elapsed time 0.421s) 
+-- Rendering model 
+-- Rendering model - done (elapsed time 0.040s) 
+ 
+Creating report file C:\Users\davam\STM32Cube\Repository\Packs\STMicroelectronics\X-CUBE-AI\5.0.0\Utilities\windows\stm32ai_output\network_analyze_report.txt 
+ 
+Exec/report summary (analyze dur=0.473s err=0) 
+------------------------------------------------------------------------------------------------------------------------ 
+model file         : D:\ETH\Courses\ML_on_uCU\MyTests\AITest\out\withoutGRU_minmax_21_May_2020_22_14\withoutGRU.h5 
+type               : keras (keras_dump) 
+c_name             : network 
+compression        : None 
+quantize           : D:\ETH\Courses\ML_on_uCU\MyTests\AITest\out\withoutGRU_minmax_21_May_2020_22_14\withoutGRU_Q.json 
+L2r error          : NOT EVALUATED 
+workspace dir      : C:\Users\davam\AppData\Local\Temp\mxAI_workspace1003703983239005242059313337240540 
+output dir         : C:\Users\davam\STM32Cube\Repository\Packs\STMicroelectronics\X-CUBE-AI\5.0.0\Utilities\windows\stm32ai_output 
+ 
+model_name         : withoutGRU 
+model_hash         : 7b0335a92dd7c91625616e2403e41835 
+input              : quantize_conv2d_1_input [12,480 items, 12.19 KiB, ai_u8, scale=128.49803921568628, zero=0, (96, 65, 2)] 
+input (total)      : 12.19 KiB 
+output             : activation_4 [8 items, 32 B, ai_float, FLOAT32, (8,)] 
+output (total)     : 32 B 
+params #           : 26,592 items (103.88 KiB) 
+macc               : 1,533,728 
+weights (ro)       : 26,832 (26.20 KiB) (-74.77%)  
+activations (rw)   : 7,032 (6.87 KiB)  
+ram (total)        : 19,544 (19.09 KiB) = 7,032 + 12,480 + 32 
+ 
+------------------------------------------------------------------------------------------------------------------------ 
+id  layer (type)                         output shape      param #     connected to             macc           rom                 
+------------------------------------------------------------------------------------------------------------------------ 
+0   quantize_conv2d_1_input (Input)      (96, 65, 2)                                                                               
+------------------------------------------------------------------------------------------------------------------------ 
+1   quantize_conv2d_1 (Conv2D)           (96, 65, 8)       152         quantize_conv2d_1_input  947,720        176 (i)             
+------------------------------------------------------------------------------------------------------------------------ 
+2   quantize_activation_1 (Nonlinearity) (96, 65, 8)                   quantize_conv2d_1                                           
+------------------------------------------------------------------------------------------------------------------------ 
+3   quantize_max_pooling2d_1 (Pool)      (96, 8, 8)                    quantize_activation_1                                       
+------------------------------------------------------------------------------------------------------------------------ 
+5   quantize_conv2d_2 (Conv2D)           (96, 8, 8)        584         quantize_max_pooling2d_1 448,520        608 (i)             
+------------------------------------------------------------------------------------------------------------------------ 
+6   quantize_activation_2 (Nonlinearity) (96, 8, 8)                    quantize_conv2d_2                                           
+------------------------------------------------------------------------------------------------------------------------ 
+7   quantize_max_pooling2d_2 (Pool)      (96, 2, 8)                    quantize_activation_2                                       
+------------------------------------------------------------------------------------------------------------------------ 
+9   quantize_conv2d_3 (Conv2D)           (96, 2, 8)        584         quantize_max_pooling2d_2 112,136        608 (i)             
+------------------------------------------------------------------------------------------------------------------------ 
+10  quantize_activation_3 (Nonlinearity) (96, 2, 8)                    quantize_conv2d_3                                           
+------------------------------------------------------------------------------------------------------------------------ 
+11  quantize_max_pooling2d_3 (Pool)      (96, 1, 8)                    quantize_activation_3                                       
+------------------------------------------------------------------------------------------------------------------------ 
+13  flatten_1 (Reshape)                  (768,)                        quantize_max_pooling2d_3                                    
+------------------------------------------------------------------------------------------------------------------------ 
+14  quantize_dense_1 (Dense)             (32,)             24,608      flatten_1                24,576         24,704 (i)          
+------------------------------------------------------------------------------------------------------------------------ 
+15  quantize_dense_2 (Dense)             (16,)             528         quantize_dense_1         512            576 (i)             
+------------------------------------------------------------------------------------------------------------------------ 
+16  quantize_dense_3 (Dense)             (8,)              136         quantize_dense_2         144            160 (i)             
+------------------------------------------------------------------------------------------------------------------------ 
+17  activation_4 (Nonlinearity)          (8,)                          quantize_dense_3         120                                
+------------------------------------------------------------------------------------------------------------------------ 
+withoutGRU p=26592(103.88 KBytes) macc=1533728 rom=26.20 KBytes (-74.77%) ram=6.87 KiB io_ram=12.22 KiB 
+ 
+  
+Complexity per-layer - macc=1,533,728 rom=26,832 
+------------------------------------------------------------------------------------------------------------------------ 
+id      layer (type)                         macc                                    rom                                     
+------------------------------------------------------------------------------------------------------------------------ 
+1       quantize_conv2d_1 (Conv2D)           |||||||||||||||||||||||||||||||  61.8%  |                                 0.7%  
+5       quantize_conv2d_2 (Conv2D)           |||||||||||||||                  29.2%  |                                 2.3%  
+9       quantize_conv2d_3 (Conv2D)           ||||                              7.3%  |                                 2.3%  
+14      quantize_dense_1 (Dense)             |                                 1.6%  |||||||||||||||||||||||||||||||  92.1%  
+15      quantize_dense_2 (Dense)             |                                 0.0%  |                                 2.1%  
+16      quantize_dense_3 (Dense)             |                                 0.0%  |                                 0.6%  
+17      activation_4 (Nonlinearity)          |                                 0.0%  |                                 0.0%  
+------------------------------------------------------------------------------------------------------------------------ 
+ 
+Using TensorFlow backend. 
+Analyze complete on AI model
+
+
+
+
+Starting AI validation on desktop with custom dataset : D:\ETH\Courses\ML_on_uCU\MyTests\AITest\out\withoutGRU_minmax_21_May_2020_21_34\withoutGRU_reference.npz... 
+Neural Network Tools for STM32 v1.2.0 (AI tools v5.0.0) 
+-- Importing model 
+-- Importing model - done (elapsed time 0.508s) 
+-- Building X86 C-model 
+-- Building X86 C-model - done (elapsed time 1.109s) 
+-- Setting inputs (and outputs) data 
+Using user-provided input file(s), shapes=(32, 96, 65, 2) 
+Using reference output file(s), shapes=(32, 8) 
+Some inputs are quantized, formats=(8, 0) 
+-- Setting inputs (and outputs) data - done (elapsed time 0.052s) 
+-- Running X86 C-model 
+-- Running X86 C-model - done (elapsed time 0.101s) 
+-- Running original model 
+-- Running original model - done (elapsed time 0.202s) 
+ 
+Accuracy report #1 for the generated x86 C-model 
+---------------------------------------------------------------------------------------------------- 
+NOTE: Computed against the provided ground truth values 
+ 
+acc=81.25%, rmse=0.1716, mae=0.0612 
+ 
+8 classes (32 samples) 
+------------------------------------------------ 
+C0         5    .    .    .    .    .    .    .   
+C1         1    2    .    .    .    .    .    .   
+C2         .    .    3    1    .    .    .    .   
+C3         .    .    .    3    1    .    .    .   
+C4         .    .    .    .    3    .    .    .   
+C5         .    .    .    .    .    5    1    .   
+C6         .    .    .    .    1    .    2    .   
+C7         .    .    .    .    1    .    .    3   
+ 
+Accuracy report #1 for the reference model 
+---------------------------------------------------------------------------------------------------- 
+NOTE: Computed against the provided ground truth values 
+ 
+acc=81.25%, rmse=0.1696, mae=0.0613 
+ 
+8 classes (32 samples) 
+------------------------------------------------ 
+C0         5    .    .    .    .    .    .    .   
+C1         1    2    .    .    .    .    .    .   
+C2         .    .    3    1    .    .    .    .   
+C3         .    .    .    3    1    .    .    .   
+C4         .    .    .    .    3    .    .    .   
+C5         .    .    .    .    .    5    1    .   
+C6         .    .    .    .    1    .    2    .   
+C7         .    .    .    .    1    .    .    3   
+ 
+Cross accuracy report #1 (reference vs C-model) 
+---------------------------------------------------------------------------------------------------- 
+NOTE: the output of the reference model is used as ground truth value 
+ 
+acc=100.00%, rmse=0.0286, mae=0.0051 
+ 
+8 classes (32 samples) 
+------------------------------------------------ 
+C0         6    .    .    .    .    .    .    .   
+C1         .    2    .    .    .    .    .    .   
+C2         .    .    3    .    .    .    .    .   
+C3         .    .    .    4    .    .    .    .   
+C4         .    .    .    .    6    .    .    .   
+C5         .    .    .    .    .    5    .    .   
+C6         .    .    .    .    .    .    3    .   
+C7         .    .    .    .    .    .    .    3   
+ 
+C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_m_inputs_1.csv has NOT been created 
+Note: per-SAMPLE DATA size limit exceeded: 12480 > 1024 
+C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_c_inputs_1.csv has NOT been created 
+Note: per-SAMPLE DATA size limit exceeded: 12480 > 1024 
+Creating C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_m_outputs_1.csv 
+Creating C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_c_outputs_1.csv 
+Creating C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_io.npz 
+ 
+Evaluation report (summary) 
+-------------------------------------------------- 
+Mode                   acc       rmse      mae       
+-------------------------------------------------- 
+x86 C-model #1         81.2%     0.171631  0.061168  
+original model #1      81.2%     0.169592  0.061270  
+X-cross #1             100.0%    0.028558  0.005112  
+ 
+L2r error : NOT EVALUATED 
+ 
+Creating report file C:\Users\davam\.stm32cubemx\stm32ai_output\network_validate_report.txt 
+Using TensorFlow backend. 
+Validation ended
+
+
+
+
+
+Starting AI validation on target with custom dataset : D:\ETH\Courses\ML_on_uCU\MyTests\AITest\out\withoutGRU_minmax_21_May_2020_21_34\withoutGRU_reference.npz... 
+Neural Network Tools for STM32 v1.2.0 (AI tools v5.0.0) 
+-- Importing model 
+-- Importing model - done (elapsed time 0.668s) 
+-- Building X86 C-model 
+-- Building X86 C-model - done (elapsed time 1.795s) 
+-- Setting inputs (and outputs) data 
+Using user-provided input file(s), shapes=(32, 96, 65, 2) 
+Using reference output file(s), shapes=(32, 8) 
+Some inputs are quantized, formats=(8, 0) 
+-- Setting inputs (and outputs) data - done (elapsed time 0.073s) 
+-- Running STM32 C-model 
+ 
+ON-DEVICE STM32 execution ("network", None, 115200).. 
+ 
+<Stm32com id=0x2586ce35b38 - CONNECTED(COM6/115200) devid=0x415/STM32L4x6xx msg=2.1> 
+ 0x415/STM32L4x6xx @80MHz/80MHz (FPU is present) lat=4 ART: ICen DCen 
+ found network(s): ['network'] 
+ description    : 'network' 1->[8]->1 macc=1533728 rom=26.20KiB ram=6.87KiB 
+ tools versions : rt=(4, 1, 0) tool=(5, 0, 0)/(1, 3, 0) api=(1, 1, 0) "Sat May 23 20:50:23 2020" 
+ 
+Running with inputs (32, 96, 65, 2).. 
+........ 1/32 
+........ 2/32 
+........ 3/32 
+........ 4/32 
+........ 5/32 
+........ 6/32 
+........ 7/32 
+........ 8/32 
+........ 9/32 
+........ 10/32 
+........ 11/32 
+........ 12/32 
+........ 13/32 
+........ 14/32 
+........ 15/32 
+........ 16/32 
+........ 17/32 
+........ 18/32 
+........ 19/32 
+........ 20/32 
+........ 21/32 
+........ 22/32 
+........ 23/32 
+........ 24/32 
+........ 25/32 
+........ 26/32 
+........ 27/32 
+........ 28/32 
+........ 29/32 
+........ 30/32 
+........ 31/32 
+........ 32/32 
+ RUN Stats    : batches=32 dur=59.938s tfx=58.448s 6.690KiB/s (wb=390.000KiB,rb=1.000KiB) 
+ 
+Results for 32 inference(s) @80/80MHz (macc:1533728) 
+ device      : 0x415/STM32L4x6xx @80MHz/80MHz (FPU is present) lat=4 ART: ICen DCen 
+ duration    : 196.677 ms (average) 
+ CPU cycles  : 15734181 (average) 
+ cycles/MACC : 10.26 (average for all layers) 
+ c_nodes     : 8 
+ 
+Clayer  id  desc                          oshape          fmt       ms         
+-------------------------------------------------------------------------------- 
+0       1   10011/(Merged Conv2d / Pool)  (96, 8, 8)      uint8     145.072    
+1       5   10011/(Merged Conv2d / Pool)  (96, 2, 8)      uint8     36.706     
+2       9   10011/(Merged Conv2d / Pool)  (96, 1, 8)      uint8     12.487     
+3       14  10005/(Dense)                 (1, 1, 32)      uint8     2.265      
+4       15  10005/(Dense)                 (1, 1, 16)      uint8     0.074      
+5       16  10005/(Dense)                 (1, 1, 8)       uint8     0.035      
+6       16  10009/(Nonlinearity)          (1, 1, 8)       float32   0.012      
+7       17  10009/(Nonlinearity)          (1, 1, 8)       float32   0.026      
+                                                                    196.677 (total) 
+ 
+-- Running STM32 C-model - done (elapsed time 60.823s) 
+-- Running original model 
+-- Running original model - done (elapsed time 0.409s) 
+ 
+Accuracy report #1 for the generated stm32 C-model 
+---------------------------------------------------------------------------------------------------- 
+NOTE: Computed against the provided ground truth values 
+ 
+acc=81.25%, rmse=0.1716, mae=0.0612 
+ 
+8 classes (32 samples) 
+------------------------------------------------ 
+C0         5    .    .    .    .    .    .    .   
+C1         1    2    .    .    .    .    .    .   
+C2         .    .    3    1    .    .    .    .   
+C3         .    .    .    3    1    .    .    .   
+C4         .    .    .    .    3    .    .    .   
+C5         .    .    .    .    .    5    1    .   
+C6         .    .    .    .    1    .    2    .   
+C7         .    .    .    .    1    .    .    3   
+ 
+Accuracy report #1 for the reference model 
+---------------------------------------------------------------------------------------------------- 
+NOTE: Computed against the provided ground truth values 
+ 
+acc=81.25%, rmse=0.1696, mae=0.0613 
+ 
+8 classes (32 samples) 
+------------------------------------------------ 
+C0         5    .    .    .    .    .    .    .   
+C1         1    2    .    .    .    .    .    .   
+C2         .    .    3    1    .    .    .    .   
+C3         .    .    .    3    1    .    .    .   
+C4         .    .    .    .    3    .    .    .   
+C5         .    .    .    .    .    5    1    .   
+C6         .    .    .    .    1    .    2    .   
+C7         .    .    .    .    1    .    .    3   
+ 
+Cross accuracy report #1 (reference vs C-model) 
+---------------------------------------------------------------------------------------------------- 
+NOTE: the output of the reference model is used as ground truth value 
+ 
+acc=100.00%, rmse=0.0286, mae=0.0051 
+ 
+8 classes (32 samples) 
+------------------------------------------------ 
+C0         6    .    .    .    .    .    .    .   
+C1         .    2    .    .    .    .    .    .   
+C2         .    .    3    .    .    .    .    .   
+C3         .    .    .    4    .    .    .    .   
+C4         .    .    .    .    6    .    .    .   
+C5         .    .    .    .    .    5    .    .   
+C6         .    .    .    .    .    .    3    .   
+C7         .    .    .    .    .    .    .    3   
+ 
+C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_m_inputs_1.csv has NOT been created 
+Note: per-SAMPLE DATA size limit exceeded: 12480 > 1024 
+C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_c_inputs_1.csv has NOT been created 
+Note: per-SAMPLE DATA size limit exceeded: 12480 > 1024 
+Creating C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_m_outputs_1.csv 
+Creating C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_c_outputs_1.csv 
+Creating C:\Users\davam\.stm32cubemx\stm32ai_output\network_val_io.npz 
+ 
+Evaluation report (summary) 
+-------------------------------------------------- 
+Mode                   acc       rmse      mae       
+-------------------------------------------------- 
+stm32 C-model #1       81.2%     0.171631  0.061168  
+original model #1      81.2%     0.169592  0.061270  
+X-cross #1             100.0%    0.028558  0.005112  
+ 
+L2r error : NOT EVALUATED 
+ 
+Creating report file C:\Users\davam\.stm32cubemx\stm32ai_output\network_validate_report.txt 
+Using TensorFlow backend. 
+Validation ended

@@ -1,0 +1,7 @@
+nnom_matrix.c:32:15:Add	24	static
+nnom_matrix.c:45:15:Sub	24	static
+nnom_matrix.c:58:15:Mult	24	static
+nnom_matrix.c:74:15:_same_shape_matrix_layer	24	static
+nnom_matrix.c:107:15:add_run	48	static
+nnom_matrix.c:143:15:sub_run	48	static
+nnom_matrix.c:178:15:mult_run	48	static

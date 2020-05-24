@@ -1,0 +1,3 @@
+nnom_input.c:25:15:Input	56	static
+nnom_input.c:64:15:input_build	24	static
+nnom_input.c:79:15:input_run	32	static

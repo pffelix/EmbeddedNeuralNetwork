@@ -1,0 +1,3 @@
+nnom_baselayer.c:26:15:BaseLayer	24	static
+nnom_baselayer.c:58:15:default_build	24	static
+nnom_baselayer.c:73:15:default_run	24	static

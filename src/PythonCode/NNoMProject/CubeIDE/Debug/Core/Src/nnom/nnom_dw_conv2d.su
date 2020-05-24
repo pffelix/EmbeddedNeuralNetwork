@@ -1,0 +1,3 @@
+nnom_dw_conv2d.c:30:15:DW_Conv2D	48	static
+nnom_dw_conv2d.c:43:15:dw_conv2d_build	40	static
+nnom_dw_conv2d.c:78:15:dw_conv2d_run	144	static

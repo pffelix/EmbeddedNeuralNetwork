@@ -1,0 +1,3 @@
+nnom_zero_padding.c:25:15:ZeroPadding	32	static
+nnom_zero_padding.c:58:15:zero_padding_build	32	static
+nnom_zero_padding.c:77:15:zero_padding_run	72	static

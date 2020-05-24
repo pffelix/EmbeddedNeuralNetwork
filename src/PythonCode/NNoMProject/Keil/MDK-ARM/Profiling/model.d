@@ -1,0 +1,13 @@
+profiling\model.o: model.c
+profiling\model.o: .\nnom-master\inc\nnom.h
+profiling\model.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+profiling\model.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+profiling\model.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+profiling\model.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+profiling\model.o: .\nnom-master\port\nnom_port.h
+profiling\model.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+profiling\model.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+profiling\model.o: .\nnom-master\inc\nnom_tensor.h
+profiling\model.o: .\nnom-master\inc\nnom.h
+profiling\model.o: .\nnom-master\inc\nnom_layers.h
+profiling\model.o: .\nnom-master\inc\nnom_utils.h

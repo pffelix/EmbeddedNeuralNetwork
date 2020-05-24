@@ -1,0 +1,3 @@
+nnom_avgpool.c:29:15:AvgPool	48	static
+nnom_avgpool.c:42:15:avgpooling_build	40	static
+nnom_avgpool.c:59:15:avgpool_run	112	static

@@ -1,0 +1,12 @@
+nnom_utils.c:20:24:_predict_create_instance	32	static
+nnom_utils.c:51:13:_predict_delete_instance	16	static
+nnom_utils.c:64:17:prediction_create	32	static
+nnom_utils.c:88:15:prediction_run	56	static
+nnom_utils.c:166:6:prediction_end	16	static
+nnom_utils.c:173:6:prediction_delete	16	static
+nnom_utils.c:178:6:prediction_matrix	32	static
+nnom_utils.c:209:6:prediction_top_k	32	static
+nnom_utils.c:227:6:prediction_summary	40	static
+nnom_utils.c:258:15:nnom_predict	48	static
+nnom_utils.c:307:13:layer_stat	16	static
+nnom_utils.c:333:6:model_stat	32	static

@@ -1,0 +1,14 @@
+nnom_activation.c:32:22:activation_free	16	static
+nnom_activation.c:38:15:Activation	32	static
+nnom_activation.c:73:15:ReLU	16	static
+nnom_activation.c:84:15:Sigmoid	24	static
+nnom_activation.c:95:15:TanH	24	static
+nnom_activation.c:105:15:activation_run	24	static
+nnom_activation.c:118:22:relu_run	16	static
+nnom_activation.c:128:22:tanh_run	16	static
+nnom_activation.c:141:22:sigmoid_run	16	static
+nnom_activation.c:154:20:act_relu	16	static
+nnom_activation.c:162:20:act_tanh	24	static
+nnom_activation.c:172:20:act_sigmoid	24	static
+nnom_activation.c:184:15:act_direct_run	24	static
+nnom_activation.c:194:15:act_tensor_run	16	static

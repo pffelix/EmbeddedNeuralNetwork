@@ -1,0 +1,112 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.28.0.0
+Copyright (C) 2019 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Parham Davami HP Inc. Flex license: MDK Professional 5.28 (Flex) (mdk_pro) Operation stops: 18 Feb 2021
+ 
+Tool Versions:
+Toolchain:       MDK Professional 5.28 (Flex)  Version: 5.28.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARMCM3.DLL V5.28.0.0
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.6.0
+Dialog DLL:      TCM.DLL V1.36.2.0
+ 
+<h2>Project:</h2>
+D:\ETH\Courses\ML_on_uCU\Project\MyCodeVersion\NNoMProject\Keil\MDK-ARM\Profiling.uvprojx
+Project File Date:  04/06/2020
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'Profiling'
+compiling main.c...
+../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_flash.h(844): warning:  #47-D: incompatible redefinition of macro "FLASH_SIZE"  (declared at line 1136 of "C:\Users\davam\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.3.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l475xx.h")
+  #define FLASH_SIZE                         ((((*((uint32_t *)FLASH_SIZE_DATA_REGISTER)) == 0xFFFFU)) ? (0x400U << 10U) : \
+../Src/main.c: 1 warning, 0 errors
+linking...
+Program Size: Code=26960 RO-data=27992 RW-data=60 ZI-data=70040  
+FromELF: creating hex file...
+"Profiling\Profiling.axf" - 0 Error(s), 1 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.6.0.pack
+                ARM.CMSIS.5.6.0
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.3.0
+   * Component: DSP Variant: Library Version: 1.7.0
+   * Component: NN Lib Version: 1.2.0
+
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.STM32L4xx_DFP.2.3.0.pack
+                Keil.STM32L4xx_DFP.2.3.0
+                STMicroelectronics STM32L4 Series Device Support, Drivers and Examples
+   * Component: Startup Version: 1.3.1
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_Profiling
+  C:\Users\davam\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include
+  C:\Users\davam\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\DSP\Include
+  C:\Users\davam\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\NN\Include
+  C:\Users\davam\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.3.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.3.0
+
+   * Component: ARM::CMSIS:DSP:Library:1.7.0
+      Include file:  CMSIS\DSP\Include\arm_math.h
+      Library file:  CMSIS\DSP\Lib\ARM\arm_cortexM4lf_math.lib
+
+   * Component: ARM::CMSIS:NN Lib:1.2.0
+      Source file:   CMSIS\NN\Source\FullyConnectedFunctions\arm_fully_connected_q7.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_depthwise_separable_conv_HWC_q7.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_nn_mat_mult_kernel_q7_q15.c
+      Source file:   CMSIS\NN\Source\FullyConnectedFunctions\arm_fully_connected_q15.c
+      Source file:   CMSIS\NN\Source\FullyConnectedFunctions\arm_fully_connected_q15_opt.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_convolve_HWC_q7_fast_nonsquare.c
+      Source file:   CMSIS\NN\Source\FullyConnectedFunctions\arm_fully_connected_mat_q7_vec_q15_opt.c
+      Source file:   CMSIS\NN\Source\ActivationFunctions\arm_nn_activations_q7.c
+      Source file:   CMSIS\NN\Source\ActivationFunctions\arm_relu_q15.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_convolve_HWC_q15_basic.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_nn_mat_mult_kernel_q7_q15_reordered.c
+      Source file:   CMSIS\NN\Source\NNSupportFunctions\arm_q7_to_q15_reordered_no_shift.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_convolve_HWC_q7_fast.c
+      Source file:   CMSIS\NN\Source\NNSupportFunctions\arm_nntables.c
+      Source file:   CMSIS\NN\Source\NNSupportFunctions\arm_nn_mult_q15.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_depthwise_separable_conv_HWC_q7_nonsquare.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_depthwise_conv_u8_basic_ver1.c
+      Source file:   CMSIS\NN\Source\FullyConnectedFunctions\arm_fully_connected_q7_opt.c
+      Source file:   CMSIS\NN\Source\FullyConnectedFunctions\arm_fully_connected_mat_q7_vec_q15.c
+      Source file:   CMSIS\NN\Source\NNSupportFunctions\arm_q7_to_q15_no_shift.c
+      Source file:   CMSIS\NN\Source\NNSupportFunctions\arm_nn_mult_q7.c
+      Source file:   CMSIS\NN\Source\PoolingFunctions\arm_pool_q7_HWC.c
+      Source file:   CMSIS\NN\Source\SoftmaxFunctions\arm_softmax_q15.c
+      Source file:   CMSIS\NN\Source\SoftmaxFunctions\arm_softmax_q7.c
+      Include file:  CMSIS\NN\Include\arm_nnfunctions.h
+      Source file:   CMSIS\NN\Source\ActivationFunctions\arm_relu_q7.c
+      Source file:   CMSIS\NN\Source\ActivationFunctions\arm_nn_activations_q15.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_convolve_HWC_q7_RGB.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_convolve_HWC_q15_fast.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_convolve_1x1_HWC_q7_fast_nonsquare.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_convolve_HWC_q7_basic.c
+      Source file:   CMSIS\NN\Source\ConvolutionFunctions\arm_convolve_HWC_q7_basic_nonsquare.c
+
+   * Component: Keil::Device:Startup:1.3.1
+      Source file:   MDK\Device\Source\ARM\STM32L4xx_DB_OPT.s
+      Source file:   Drivers\CMSIS\Device\ST\STM32L4xx\Source\Templates\arm\startup_stm32l475xx.s
+      Include file:  Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l4xx.h
+      Source file:   Drivers\CMSIS\Device\ST\STM32L4xx\Source\Templates\system_stm32l4xx.c
+Build Time Elapsed:  00:00:08
+</pre>
+</body>
+</html>
