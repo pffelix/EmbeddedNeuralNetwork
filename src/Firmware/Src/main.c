@@ -552,7 +552,7 @@ int main(void)
 					for (int j=0;j<FftNSave;j++){
 							featureBuffer[i][j][0] = (int16_t)(featureBuffer[i][j][0]/mag_max0);
 							featureBuffer[i][j][1] = (int16_t)(featureBuffer[i][j][1]/mag_max1);
-							printf ("%f\n",featureBuffer[i][j][0]);
+							//printf ("%f\n",featureBuffer[i][j][0]);
 					}
 				}
 				
@@ -1258,7 +1258,7 @@ void featureUpdate(float32_t* inputBuffer){
 		// fill left FFT buffer
 		for(int i = 0; i < FftN; i++){
 			fftBuffer[2 * i] = inputBuffer[i]; // real
-			fftBuffer[2 * i + 1] = 0; // imaginary
+			fftBuffer[2 * i + 1] = 0.0f; // imaginary
 			inputBuffer[i] = 0;
 		}
 		
@@ -1300,20 +1300,20 @@ void featureClean(void){
 		for (int m = 0; m < FftT; m++) {
 			for (int n = 0; n < FftNSave; n++) {
 				for (int o = 0; o < MicN; o++) {
-					featureBuffer[m][n][o] = 0;
+					featureBuffer[m][n][o] = 0.0f;
 				}
 			}
 		}
 
 		if(recBuffer){
 			for (int m = 0; m < FftN; m++) {
-				recBuffer[m] = 0;
+				recBuffer[m] = 0.0f;
 			}
 		}
 		
 		if(fftBuffer){
 			for (int m = 0; m < FftN * 2; m++) {
-				fftBuffer[m] = 0;
+				fftBuffer[m] = 0.0f;
 			}
 		}
 }			
