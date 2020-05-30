@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=D:/ETH/Courses/ML_on_uCU/Project/MyCodeVersion/Firmware/Inc
+HeaderPath=D:/ETH/Courses/ML_on_uCU/Project/embeddedlocalization/src/Firmware/Inc
 HeaderFiles=app_x-cube-ai.h;constants_ai.h;stm32l4xx_it.h;RTE_Components.h;stm32l4xx_hal_conf.h;main.h;
-SourcePath=D:/ETH/Courses/ML_on_uCU/Project/MyCodeVersion/Firmware/Src
+SourcePath=D:/ETH/Courses/ML_on_uCU/Project/embeddedlocalization/src/Firmware/Src
 SourceFiles=app_x-cube-ai.c;stm32l4xx_it.c;stm32l4xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

@@ -47,7 +47,7 @@
 														44100		-->>  44118
 														48000   -->>  48077
 */
-#define SampleRate	16000 //16000/24000/32000/40000/44000/48000
+#define SampleRate	16000 //16000/24000/32000/40000/44100/48000
 
 #define ShiftRight	16		// Adjust Shift right to your loudness
 
@@ -57,13 +57,9 @@
 #define QUEUELENGTH 512
 #define QUEUELENGTH_Half 256
 #define QueDataHalf_1st	0
-#define QueDataHalf_2nd	64
 #define QueDataHalf_3rd	128
-#define QueDataHalf_4th	192
 #define QueDataFull_1st	256
-#define QueDataFull_2nd	320
 #define QueDataFull_3rd	384
-#define QueDataFull_4th	448
 #define HAL_QSPI_TIMEOUT	180000U // 180 sec //
 
 // define
@@ -420,6 +416,8 @@ int main(void)
 				HAL_NVIC_DisableIRQ (EXTI15_10_IRQn);
 				printf("Stopped Recording and Send Data Over\n");
 			
+					
+				// Save on the flash mem if anything is left in the buf
 				if (bufferHalfFull){					
 					
 					for(int i=QueDataHalf_1st;i<QueDataHalf_3rd;i++){
@@ -561,15 +559,11 @@ int main(void)
 				MX_X_CUBE_AI_Process();
 				
 				
-				
+				printf ("Wait for erasing\n");
 				while (!qspiSendReady);
 				printf ("Erasing Done\n");
 				HAL_NVIC_EnableIRQ (EXTI15_10_IRQn);
 				state = 0;
-				
-				
-				// Finish feature calculation
-				//featureFinish();
 				
 				break;
 		}
@@ -628,7 +622,7 @@ void SystemClock_Config(void)
   PeriphClkInit.Dfsdm1ClockSelection = RCC_DFSDM1CLKSOURCE_PCLK;
   PeriphClkInit.PLLSAI1.PLLSAI1Source = RCC_PLLSOURCE_HSI;
   PeriphClkInit.PLLSAI1.PLLSAI1M = 4;
-	if (SampleRate == 16000) 									
+  if (SampleRate == 16000)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 77;
 	else if(SampleRate == 24000)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 35;
@@ -636,6 +630,8 @@ void SystemClock_Config(void)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 84;
 	else if(SampleRate == 40000)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 63;
+	else if(SampleRate == 44100)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 84;
 	else if(SampleRate == 48000)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 70;
   PeriphClkInit.PLLSAI1.PLLSAI1P = RCC_PLLP_DIV7;
@@ -695,7 +691,7 @@ static void MX_DFSDM1_Init(void)
 
   /* USER CODE BEGIN DFSDM1_Init 0 */
 	/*																					// Add this part to the SystemClock_Config function whenever recreating code from cube
-	if (SampleRate == 16000) 									
+	if (SampleRate == 16000)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 77;
 	else if(SampleRate == 24000)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 35;
@@ -703,6 +699,8 @@ static void MX_DFSDM1_Init(void)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 84;
 	else if(SampleRate == 40000)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 63;
+	else if(SampleRate == 44100)
+		PeriphClkInit.PLLSAI1.PLLSAI1N = 84;
 	else if(SampleRate == 48000)
 		PeriphClkInit.PLLSAI1.PLLSAI1N = 70;
 	*/
