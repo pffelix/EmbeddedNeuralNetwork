@@ -4,7 +4,7 @@
 <p>&nbsp;</p>
 <p>for generated incident angle dependent speech files, literature papers, photos, and other files please go to the following link:</p>
 <p style="text-align: center;"><a title="ML_on_MCU_SoundLocalization" href="https://polybox.ethz.ch/index.php/s/dZg2X58Fk4XyTp1" target="_blank" rel="noopener">ETH Zurich Polybox</a></p>
-<p style="color: #2e6c80;"><span style="color: #0000ff;">Source-Codes folder structure: (/src/)</span></p>
+<p><span style="color: #0000ff;"><strong>&nbsp;Source-Codes folder structure: (/src/)</strong></span></p>
 <ol style="list-style: none; font-size: 14px; line-height: 32px; font-weight: bold;">
 <li style="clear: both;">"/AudioRecording" folder contains C-code to record audio (Sine-Sweeps in the project) from different angles for varying sample rates and send over UART<br /></li>
 <li style="clear: both;">"/Firmware" folder contains final implemented classification C-code to predict the incident angle of sound<br /></li>
