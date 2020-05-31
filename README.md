@@ -6,17 +6,11 @@
 <p style="text-align: center;"><a title="ML_on_MCU_SoundLocalization" href="https://polybox.ethz.ch/index.php/s/dZg2X58Fk4XyTp1" target="_blank" rel="noopener">ETH Zurich Polybox</a></p>
 <p style="color: #2e6c80;"><span style="color: #0000ff;">Source-Codes folder structure: (/src/)</span></p>
 <ol style="list-style: none; font-size: 14px; line-height: 32px; font-weight: bold;">
-<li style="clear: both;">"/AudioRecording" folder contains C-code to record audio (Sine-Sweeps in the project) from different angles for varying sample rates and send over UART</li>
-<li style="clear: both;"><br />"/Firmware" folder contains final implemented classification C-code to predict the incident angle of sound</li>
-<li style="clear: both;"></li>
-<li style="clear: both;"></li>
-<li style="clear: both;">"/QmnFirmware" folder contains feature extraction and classification C-code based on Qmn format instead of floating-point as in the firmware. UNDER DEVELOPMENT</li>
-<li style="clear: both;"></li>
-<li style="clear: both;"></li>
-<li style="clear: both;">"/Matlab" folder contains Matlab-code for impulse response extraction of the sine-sweep recorded angles, convolving them with CMU speech database and saving .wav files of extracted features (Short-Time Fourier Transforms).</li>
-<li style="clear: both;"></li>
-<li style="clear: both;"></li>
-<li style="clear: both;">"/PythonCode" folder contains Python-code for neural network development, quantization, and verification.</li>
+<li style="clear: both;">"/AudioRecording" folder contains C-code to record audio (Sine-Sweeps in the project) from different angles for varying sample rates and send over UART<br /></li>
+<li style="clear: both;">"/Firmware" folder contains final implemented classification C-code to predict the incident angle of sound<br /></li>
+<li style="clear: both;">"/QmnFirmware" folder contains feature extraction and classification C-code based on Qmn format instead of floating-point as in the firmware. UNDER DEVELOPMENT<br /></li>
+<li style="clear: both;">"/Matlab" folder contains Matlab-code for impulse response extraction of the sine-sweep recorded angles, convolving them with CMU speech database and saving .wav files of extracted features (Short-Time Fourier Transforms).<br /></li>
+<li style="clear: both;">"/PythonCode" folder contains Python-code for neural network development, quantization, and verification.<br /></li>
 </ol>
 <p><span style="color: #0000ff;"><strong>&nbsp;generated Reports folder structure: (/reports/)</strong></span></p>
 <ol style="list-style: none; font-size: 14px; line-height: 32px; font-weight: bold;">
