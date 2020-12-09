@@ -1,6 +1,6 @@
 <!-- #######  Neural Networks for STM32L475 MicroConroller Implementation #########-->
 ![image_setup](images/setup.png?raw=true)
-<h1 style="color: #5e9ca0;">Neural Networks for STM32L475 Microconroller</h1>
+<h1 style="color: #5e9ca0;">Neural Networks for STM32L475 Microcontroller</h1>
 <h2 style="color: #2e6c80;">Implementation usable for Indoor Speech Localization</h2>
 <p>&nbsp;</p>
 <p><span style="color: #0000ff;"><strong>&nbsp;Source-Code folder structure: (/src/)</strong></span></p>
