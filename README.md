@@ -1,12 +1,16 @@
 <!-- #######  Neural Networks for STM32L475 MicroConroller Implementation #########-->
-![image_setup](images/setup.png?raw=true)
+<p align="center">
+<img src="images/setup.png">
+</p>
 <h1 style="color: #5e9ca0;">Neural Networks for STM32L475 Cortex-M4 Microcontroller</h1>
 <h2 style="color: #2e6c80;">Implementation usable for Direction of Arrival (DoA) classification</h2>
 <p>&nbsp;</p>
 
 The firmware allows to classify the direction of arrival (DoA) of a spoken utterance by exploiting the sound reflection pattern of the microcontroller board and the surrounding area.
 We trained for this task a a tiny convolutional neural network (CNN). For training we used the CMU speech recording database convolved with measured impulse responses of the shown room for 45° steps in the horizontal plane.
-![image_setup](images/network.png?raw=true)
+<p align="center">
+<img src="images/network.png">
+</p>
 
 The prediction can be started on the B-L475E-IOT01A Discovery kit by pressing the USER button.
 The network implementation consumes at prediction 18KB flash, 26KB Ram and 59mW power.
