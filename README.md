@@ -14,6 +14,7 @@ The recording can be started on the B-L475E-IOT01A Discovery kit by pressing the
 The user has then 3 seconds time to formulate the utterance. After it the DoA prediction is performed.
 The network implementation consumes at prediction 18KB flash, 26KB Ram and 59mW power.
 After perfoming the prediction the microcontroller prints the prediction probability for each of the 8 horizontal incidence angles over UART.
+
 <p align="center">
 <img src="images/prediction.png">
 </p>
