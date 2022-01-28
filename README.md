@@ -7,7 +7,7 @@
 <p>&nbsp;</p>
 
 ### Content
-The firmware allows to classify the direction of arrival (DoA) of a spoken utterance by exploiting the sound reflection and scattering pattern of the microcontroller board and the surrounding area. Related, research on the topic has been given in El Badawy, D. & Dokmanic, I.:
+The firmware allows to classify the direction of arrival (DoA) of a spoken utterance by exploiting the sound reflection and scattering pattern of the microcontroller board and the surrounding area. Related, research on the topic has been given in El Badawy D. & Dokmanic, I.:
 Direction of Arrival With One Microphone, a Few LEGOs, and Non-Negative Matrix Factorization. IEEE ACM Trans. Audio Speech Lang. Process. 26(12): 2436-2446 (2018)
 
 
