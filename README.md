@@ -7,18 +7,18 @@
 <p>&nbsp;</p>
 
 ### Content
-The firmware allows to classify the direction of arrival (DoA) of a spoken utterance by exploiting the sound reflection and scattering pattern of the microcontroller board and the surrounding area. Related fundamental research on the topic has been shown by https://github.com/swing-research/scatsense.
+The firmware allows to classify the direction of arrival (DoA) of a spoken utterance by exploiting the sound reflection and scattering pattern of a microcontroller board and its surrounding area. Related fundamental research on the topic has been shown by https://github.com/swing-research/scatsense.
 
 
 ### Architecture
-We trained for the task a tiny convolutional neural network (CNN). For training we used the CMU speech recording database convolved with measured impulse responses of the shown room for the horizontal plane in 45° steps. We provide pre-trained networks and, in addition, IPython and MATLAB Code to train a custom tinyML network for your room setup.
+We trained for the task a tiny convolutional neural network (CNN) and used as exemplary board the B-L475E-IOT01A - STM32L4 Discovery kit IoT node with ARM Cortex-M4 processor. For training we used the CMU speech recording database convolved with measured impulse responses of the shown room for the horizontal plane in 45° steps. We provide pre-trained networks with small memory footprint and in addition IPython and MATLAB Code to train a your own custom tinyML network.
 
 <p align="center">
 <img src="images/network.png">
 </p>
 
 ### Implementation
-The recording can be started on the B-L475E-IOT01A Discovery kit by pressing the USER button.
+After flashing the Firmware in Keil on the B-L475E-IOT01A Discovery kit, the recording can be started by pressing the USER button.
 The user has then 3 seconds time to formulate the utterance. After it the DoA prediction is performed.
 The network implementation consumes at prediction 18KB flash, 26KB Ram and 59mW power.
 After perfoming the prediction the microcontroller prints the prediction probability for each of the 8 horizontal incidence angles over UART.
