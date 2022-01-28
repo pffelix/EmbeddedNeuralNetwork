@@ -5,6 +5,7 @@
 <h1 style="color: #5e9ca0;">Neural Networks for STM32L475 Cortex-M4 Microcontroller</h1>
 <h2 style="color: #2e6c80;">Implementation usable for Direction of Arrival (DoA) classification</h2>
 <p>&nbsp;</p>
+
 ### Content
 The firmware allows to classify the direction of arrival (DoA) of a spoken utterance by exploiting the sound reflection and scattering pattern of the microcontroller board and the surrounding area. Recent research on the topic has been given in Badawy & Dokmanic: “Direction of Arrival with One Microphone, a few LEGOs, and Non-Negative Matrix Factorization”, IEEE (TASLP 2018).
 
