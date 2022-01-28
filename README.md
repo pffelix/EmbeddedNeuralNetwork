@@ -12,7 +12,7 @@ Direction of Arrival With One Microphone, a Few LEGOs, and Non-Negative Matrix F
 
 
 ### Architecture
-We trained for this task a tiny convolutional neural network (CNN). For training we used the CMU speech recording database convolved with measured impulse responses of the shown room for 45° steps in the horizontal plane. We provide pre-trained networks and IPython Code to train your own tinyML network.
+We trained for this task a tiny convolutional neural network (CNN). For training we used the CMU speech recording database convolved with measured impulse responses of the shown room for the horizontal plane in 45° steps. We provide pre-trained networks and, in addition, IPython Code to train your own tinyML network.
 
 <p align="center">
 <img src="images/network.png">
