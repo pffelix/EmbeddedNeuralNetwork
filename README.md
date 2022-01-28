@@ -7,6 +7,7 @@
 <p>&nbsp;</p>
 The firmware allows to classify the direction of arrival (DoA) of a spoken utterance by exploiting the sound reflection pattern of the microcontroller board and the surrounding area.
 We trained for this task a tiny convolutional neural network (CNN). For training we used the CMU speech recording database convolved with measured impulse responses of the shown room for 45° steps in the horizontal plane. We provide pre-trained networks and IPython Code to train your own tinyML network.
+
 <p align="center">
 <img src="images/network.png">
 </p>
