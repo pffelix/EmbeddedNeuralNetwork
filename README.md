@@ -38,3 +38,6 @@ After perfoming the prediction the microcontroller prints the prediction probabi
 <ol style="list-style: none; font-size: 14px; line-height: 32px; font-weight: bold;">
 <li style="clear: both;">This folder contains reports of the verified neural network variations on the target on the verification dataset and comparison in an Excel format.</li>
 </ol>
+
+### Authors
+Felix Pfreundtner and Parham Davami
