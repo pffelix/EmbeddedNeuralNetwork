@@ -11,7 +11,7 @@ The firmware allows to classify the direction of arrival (DoA) of a spoken utter
 
 
 ### Architecture
-We trained for the task a tiny convolutional neural network (CNN). For training we used the CMU speech recording database convolved with measured impulse responses of the shown room for the horizontal plane in 45° steps. We provide pre-trained networks and, in addition, IPython Code to train a custom tinyML network for your room.
+We trained for the task a tiny convolutional neural network (CNN). For training we used the CMU speech recording database convolved with measured impulse responses of the shown room for the horizontal plane in 45° steps. We provide pre-trained networks and, in addition, IPython and MATLAB Code to train a custom tinyML network for your room setup.
 
 <p align="center">
 <img src="images/network.png">
