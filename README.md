@@ -18,7 +18,7 @@ We trained for the task a tiny convolutional neural network (CNN) and used as ex
 </p>
 
 ### Implementation
-After flashing the Firmware in Keil on the B-L475E-IOT01A Discovery kit, the recording can be started by pressing the USER button.
+After flashing the Firmware in "src/Firmware/MDK-ARM/" with Keil on the B-L475E-IOT01A Discovery kit, the recording can be started by pressing the USER button.
 The user has then 3 seconds time to formulate the utterance. After it the DoA prediction is performed.
 The network implementation consumes at prediction 18KB flash, 26KB Ram and 59mW power.
 After perfoming the prediction the microcontroller prints the prediction probability for each of the 8 horizontal incidence angles over UART.
