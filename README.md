@@ -11,7 +11,7 @@ The presented firmware allows to classify the direction of arrival (DoA) of a sp
 
 
 ### Architecture
-We trained for the task a tiny convolutional neural network (CNN) and used as exemplary board the B-L475E-IOT01A - STM32L4 Discovery kit IoT node with ARM Cortex-M4 processor. For training we used the CMU speech recording database convolved with measured impulse responses of the shown room for the horizontal plane in 45° steps. As input feature we use the magnitude spectrum. We provide pre-trained quantized Tensorflow networks with small memory footprint and in addition IPython Notebook and MATLAB Code to train a custom tinyML network fitting to your room setup.
+We trained for the task a tiny convolutional neural network (CNN) and used as exemplary board the B-L475E-IOT01A - STM32L4 Discovery kit IoT node including a MP34DT01 microphone and ARM Cortex-M4 processor. For training we used the CMU speech recording database convolved with measured impulse responses of the shown room for the horizontal plane in 45° steps. As input feature we use the magnitude spectrum. We provide pre-trained quantized Tensorflow networks with small memory footprint and in addition IPython Notebook and MATLAB Code to train a custom tinyML network fitting to your room setup.
 
 <p align="center">
 <img src="images/network.png">
