@@ -7,7 +7,7 @@
 <p>&nbsp;</p>
 
 ### Content
-The presented firmware allows to classify the direction of arrival (DoA) of a spoken utterance by exploiting the sound reflection and scattering pattern of a microcontroller board and its surrounding area. Related fundamental research on the topic has been shown by https://github.com/swing-research/scatsense.
+The presented firmware allows to classify the direction of arrival (DoA) of a spoken utterance by exploiting the sound reflection and scattering pattern of a microcontroller board and its surrounding area. Related fundamental research on the topic has been open sourced in https://github.com/swing-research/scatsense.
 
 
 ### Architecture
