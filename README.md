@@ -31,7 +31,7 @@ After perfoming the prediction the microcontroller prints the prediction probabi
 <li style="clear: both;">"/AudioRecording" folder contains C-code to record audio (Sine-Sweeps in the project) from different angles for varying sample rates and send over UART.<br /></li>
 <li style="clear: both;">"/Matlab" folder contains Matlab-code for impulse response extraction of the sine-sweep recorded angles, convolving them with CMU speech database and saving .wav files of extracted features (Short-Time Fourier Transforms).<br /></li>
 <li style="clear: both;">"/PythonCode" folder contains Python and IPython Notebook code for neural network development, quantization, and verification.<br /></li>
-<li style="clear: both;">"/Firmware" folder contains final implemented classification C-code to extract the features using the CMSIS DSP library and predict the incident angle of sound using the pre-trained tensorflow library.<br /></li>
+<li style="clear: both;">"/Firmware" folder contains final implemented classification C-code to extract the features using the CMSIS DSP library and predict the incident angle of sound using the pre-trained Tensorflow library.<br /></li>
 <li style="clear: both;">"/QmnFirmware" folder contains feature extraction and classification C-code based on Qmn format instead of floating-point as in the firmware. UNDER DEVELOPMENT<br /></li>
 </ol>
 <p><span style="color: #0000ff;"><strong>&nbsp;Generated reports folder structure: (/reports/)</strong></span></p>
