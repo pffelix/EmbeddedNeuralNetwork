@@ -22,6 +22,7 @@ We provide for the shown room a pre-trained and quantized Tensorflow network wit
 <p align="center">
 <img src="images/architecture.png">
 </p>
+
 ### Implementation
 After flashing the Firmware in "src/Firmware/MDK-ARM/" with Keil on the B-L475E-IOT01A Discovery kit, the recording can be started by pressing the USER button.
 The user has then 3 seconds time to formulate the utterance. After it the DoA prediction is performed.
