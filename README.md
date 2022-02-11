@@ -11,12 +11,17 @@ The presented firmware allows to classify the direction of arrival (DoA) of a sp
 
 
 ### Architecture
-We trained for the task a tiny convolutional neural network (CNN) and used as exemplary board the B-L475E-IOT01A - STM32L4 Discovery kit IoT node including a MP34DT01 microphone and ARM Cortex-M4 processor. For training we used the CMU speech recording database convolved with measured impulse responses of the shown room for the horizontal plane in 45° steps. As input feature we use the magnitude spectrum. We provide pre-trained quantized Tensorflow networks with small memory footprint and in addition IPython Notebook and MATLAB Code to train a custom tinyML network fitting to your room setup.
+We trained for the task a tiny convolutional neural network (CNN) with Tensorflow. We convolve the CMU speech recording database with measured impulse responses at varying direction of arrival. As input layer we use the extracted magnitude spectrum. As output layer we use the horizontal direction of arrival in 45° steps. We show in the following the used network architecture.
 
 <p align="center">
 <img src="images/network.png">
 </p>
 
+We provide for the shown room a pre-trained and quantized Tensorflow network with small memory footprint. In addition, we provide IPython Notebook and MATLAB Code to train tinyML networks fitting to a custom room setup. For hardware implementation of the networks we used the STMicroelectronics B-L475E-IOT01A - STM32L4 Discovery kit IoT node with X-Cube-AI Expansion Package. It provides an ARM Cortex-M4 processor, a MP34DT01 PDM microphone and additional 64-Mbit QSPI flash memory. We show in the following the hardware architecture we use for model inference.
+
+<p align="center">
+<img src="images/architecture.png">
+</p>
 ### Implementation
 After flashing the Firmware in "src/Firmware/MDK-ARM/" with Keil on the B-L475E-IOT01A Discovery kit, the recording can be started by pressing the USER button.
 The user has then 3 seconds time to formulate the utterance. After it the DoA prediction is performed.
