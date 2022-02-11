@@ -17,7 +17,7 @@ We trained for the task a tiny convolutional neural network (CNN) with Tensorflo
 <img src="images/network.png">
 </p>
 
-We provide for the shown room a pre-trained and quantized Tensorflow network with small memory footprint. In addition, we provide IPython Notebook and MATLAB Code to train tinyML networks fitting to a custom room setup. For hardware implementation of the networks we used the STMicroelectronics B-L475E-IOT01A - STM32L4 Discovery kit IoT node with X-Cube-AI Expansion Package. It provides an ARM Cortex-M4 processor, a MP34DT01 PDM microphone and additional 64-Mbit QSPI flash memory. We show in the following the hardware architecture we use for model inference.
+We provide for the shown room a pre-trained and quantized Tensorflow network with small memory footprint. In addition, we provide IPython Notebook and MATLAB Code to train tinyML networks fitting to a custom room setup. For hardware implementation of the networks we use the STMicroelectronics B-L475E-IOT01A - STM32L4 Discovery kit IoT node with X-Cube-AI Expansion Package and CMSIS DSP library. It provides an ARM Cortex-M4 processor, a MP34DT01 PDM microphone and additional 64-Mbit QSPI flash memory. We show in the following the hardware architecture used for model inference.
 
 <p align="center">
 <img src="images/architecture.png">
